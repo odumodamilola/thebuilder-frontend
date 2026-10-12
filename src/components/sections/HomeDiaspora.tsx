@@ -1,28 +1,30 @@
 import SectionTitle from '../ui/SectionTitle'
 import BuilderCard from '../cards/BuilderCard'
+import Link from 'next/link'
+import { useState } from 'react'
+import { homeBuilders } from '@/lib/home-builders'
+import type { Edition } from '@/lib/types'
 
-export default function HomeDiaspora({ loading, edition }: any) {
-  const builders = [
-    { name: 'Ngozi Adeyemi', classification: 'Investor', location: 'Based in London, UK', flag: '🇬🇧', headline: 'Backing diaspora founders at pre-seed', alt: '' },
-    { name: 'Kwame Asante', classification: 'Innovator', location: 'Based in Manchester, UK', flag: '🇬🇧', headline: 'Battery recycling from e-waste', alt: '' },
-    { name: 'Amina Bello', classification: 'Diaspora Professional', location: 'Based in Leeds, UK', flag: '🇬🇧', headline: 'NHS data lead, Abuja health advisor', alt: '' },
-    { name: 'Femi Ogunleye', classification: 'Creative', location: 'Based in London, UK', flag: '🇬🇧', headline: 'An Afro-futurist design studio', alt: '' },
-  ] as any[]
+export default function HomeDiaspora({ loading, edition }: { loading?: boolean; edition: Edition }) {
+  const [selection, setSelection] = useState<{ edition: Edition; region: string } | null>(null)
+  const activeRegion = selection?.edition === edition ? selection.region : edition === 'Australia' ? 'Australia' : 'UK'
+  const builders = homeBuilders[activeRegion] ?? []
 
   return (
     <section className="py-section-mobile md:py-section">
       <div className="max-w-container mx-auto px-4 md:px-6">
-        <SectionTitle className="mb-[16px] md:mb-[24px]">Builders Beyond Borders</SectionTitle>
-        <div className="flex gap-4 border-b border-line overflow-x-auto pb-0 scrollbar-hide">
-          {['UK', 'US', 'Canada', 'Australia', 'Europe', 'Middle East', 'Africa', 'Asia'].map((region, i) => (
-            <button key={region} className={`whitespace-nowrap px-4 py-2 font-semibold text-sm transition-colors ${i === 0 ? 'text-brand-red border-b-2 border-brand-red -mb-[1px]' : 'text-slate hover:text-navy-900'}`}>
+        <div className="mb-6 flex items-end justify-between gap-6"><SectionTitle>Builders Beyond Borders.</SectionTitle><a href="/diaspora" className="hidden text-sm font-semibold text-[var(--text-heading)] md:block">Explore the Diaspora hub →</a></div>
+        <div className="flex gap-4 border-b border-[var(--border)] overflow-x-auto pb-0 scrollbar-hide">
+          {Object.keys(homeBuilders).map(region => (
+            <button type="button" aria-pressed={activeRegion === region} aria-controls="home-region-profiles" onClick={() => setSelection({ edition, region })} key={region} className={`min-h-11 whitespace-nowrap px-0 mr-5 py-2 font-medium text-sm transition-colors ${activeRegion === region ? 'text-[var(--text-heading)] border-b-2 border-[var(--accent)] -mb-[1px]' : 'text-[var(--text-meta)] hover:text-[var(--text-heading)]'}`}>
               {region}
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-[16px] gap-y-[24px] md:gap-x-[24px] md:gap-y-[32px] mt-[32px]">
+        <div id="home-region-profiles" aria-label={`Builders in ${activeRegion}`} aria-live="polite" aria-busy={loading} className="grid grid-cols-2 lg:grid-cols-4 gap-x-[16px] gap-y-[24px] md:gap-x-[24px] md:gap-y-[32px] mt-[32px]">
           {builders.map((b, i) => <BuilderCard key={i} builder={b} />)}
         </div>
+        <Link href="/diaspora" className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold md:hidden">Explore the Diaspora hub →</Link>
       </div>
     </section>
   )

@@ -32,6 +32,16 @@ export interface RequestOptions extends Omit<RequestInit, 'body'> {
   signal?: AbortSignal
 }
 
+let apiToken: string | null = null
+
+export function setApiToken(token: string | null) {
+  apiToken = token
+  if (typeof window !== 'undefined') {
+    if (token) window.sessionStorage.setItem('the-builder-api-token', token)
+    else window.sessionStorage.removeItem('the-builder-api-token')
+  }
+}
+
 function buildUrl(baseUrl: string, path: string, query?: RequestOptions['query']) {
   const root = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
   const url = new URL(path.replace(/^\//, ''), root)
@@ -43,6 +53,8 @@ export function createHttpClient(baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'h
   return async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const headers = new Headers(options.headers)
     headers.set('Accept', 'application/json')
+    const token = apiToken ?? (typeof window !== 'undefined' ? window.sessionStorage.getItem('the-builder-api-token') : null)
+    if (token && !headers.has('Authorization')) headers.set('Authorization', `Bearer ${token}`)
     const isSerializable = options.body !== null && typeof options.body === 'object' && !(options.body instanceof FormData) && !(options.body instanceof URLSearchParams) && !(options.body instanceof Blob) && !(options.body instanceof ArrayBuffer)
     if (isSerializable && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json')
     const response = await fetch(buildUrl(baseUrl, path, options.query), {

@@ -12,9 +12,9 @@ export default function HomeOpportunities({ loading, edition }: any) {
   return (
     <section className="max-w-container mx-auto px-4 md:px-6 py-section-mobile md:py-section">
       <div className="flex justify-between items-end mb-8">
-        <SectionTitle>Opportunities</SectionTitle>
-        <a href="/opportunities" className="hidden md:block font-semibold text-brand-red hover:text-red-700 transition-colors">
-          View all opportunities →
+        <div><SectionTitle>Opportunities</SectionTitle><p className="mt-5 text-[var(--text-meta)]">Grants, fellowships and programmes closing soon.</p></div>
+        <a href="/opportunities" className="hidden md:block font-semibold text-[var(--text-accent)] hover:text-[var(--text-link-hover)] transition-colors">
+          All opportunities →
         </a>
       </div>
       
@@ -25,7 +25,7 @@ export default function HomeOpportunities({ loading, edition }: any) {
       </div>
       
       <div className="mt-8 md:hidden text-center">
-        <a href="/opportunities" className="font-semibold text-brand-red hover:text-red-700">View all opportunities →</a>
+        <a href="/opportunities" className="font-semibold text-[var(--text-accent)] hover:text-[var(--text-link-hover)]">View all opportunities →</a>
       </div>
     </section>
   )

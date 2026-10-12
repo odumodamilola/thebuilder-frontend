@@ -12,10 +12,10 @@ interface BuilderCardProps {
 const BuilderCard = React.memo(({ builder }: BuilderCardProps) => {
   return (
     <Link 
-      href={`/builders/${builder.slug || '#'}`}
-      className="group relative flex flex-col bg-transparent focus:outline-none focus:ring-2 focus:ring-royal transition-all duration-250 hover:-translate-y-1"
+      href={builder.slug ? `/builders/${builder.slug}` : '/builders'}
+      className="group relative flex flex-col bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] transition-all duration-250 hover:-translate-y-1"
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy-50 rounded-lg mb-4">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--surface-tint)] rounded-lg mb-4">
         {builder.imageUrl ? (
            <Image 
              src={builder.imageUrl}
@@ -31,12 +31,12 @@ const BuilderCard = React.memo(({ builder }: BuilderCardProps) => {
 
       <div className="flex flex-col flex-grow">
         <div className="mb-2">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-bold tracking-wide bg-slate-100 text-slate-600">
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[var(--surface-skeleton)] text-[var(--text-meta)]">
             {builder.classification || builder.category || 'Builder'}
           </span>
         </div>
         
-        <h3 className="font-display font-bold text-[var(--text-heading)] text-[18px] leading-tight mb-1 group-hover:text-brand-red transition-colors">
+        <h3 className="font-display font-bold text-[var(--text-heading)] text-[18px] leading-tight mb-1 group-hover:text-[var(--text-accent)] transition-colors">
           {builder.name}
         </h3>
         

@@ -4,10 +4,10 @@ export default function Wordmark({ inverse, className }: { inverse?: boolean, cl
   return (
     <span className={cn(
       "font-display font-extrabold text-[24px] tracking-tighter leading-none",
-      inverse ? "text-white" : "text-navy-900",
+      inverse ? "text-[var(--text-on-inverse)]" : "text-[var(--text-heading)]",
       className
     )}>
-      THE BUILDER<span className="text-brand-red">.</span>
+      THE BUILDER<span className={inverse ? "text-[var(--text-on-inverse)]" : "text-[var(--text-accent)]"}>.</span>
     </span>
   )
 }

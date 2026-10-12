@@ -10,7 +10,7 @@ export default function HomeTrending() {
   ]
 
   return (
-    <section className="bg-[var(--surface-card)] py-section-mobile md:py-section px-4 md:px-6 border-y border-line">
+    <section className="bg-[var(--surface-tint)] py-section-mobile md:py-section px-4 md:px-6 border-y border-[var(--border)]">
       <div className="max-w-container mx-auto">
         <div className="mb-8">
           <SectionTitle>Trending</SectionTitle>
@@ -20,11 +20,11 @@ export default function HomeTrending() {
             <li key={i} className="flex-1 flex gap-4 group cursor-pointer tb-fadeup" style={{ animationDelay: `${(i+1)*100}ms` }}>
               <span 
                 className="font-display font-extrabold text-[48px] leading-[0.8] text-transparent"
-                style={{ WebkitTextStroke: '1px #94a3b8' }}
+                style={{ WebkitTextStroke: '1px var(--text-meta)' }}
               >
                 {i + 1}
               </span>
-              <h4 className="font-display font-bold text-[var(--text-heading)] group-hover:text-brand-red transition-colors text-[15px] leading-snug">
+              <h4 className="font-display font-bold text-[var(--text-heading)] group-hover:text-[var(--text-accent)] transition-colors text-[15px] leading-snug">
                 {title}
               </h4>
             </li>

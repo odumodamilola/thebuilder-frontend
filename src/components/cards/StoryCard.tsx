@@ -27,6 +27,7 @@ export interface StoryCardProps {
   loading?: boolean;
   sponsored?: boolean;
   className?: string;
+  editorial?: boolean;
 }
 
 const StoryCard = React.memo(function StoryCard({
@@ -45,7 +46,8 @@ const StoryCard = React.memo(function StoryCard({
   priority = false,
   loading = false,
   sponsored = false,
-  className
+  className,
+  editorial = false
 }: StoryCardProps) {
   const [saved, setSaved] = useState(false);
   // Coalesce props from article if provided
@@ -56,20 +58,20 @@ const StoryCard = React.memo(function StoryCard({
   const finalDate = date || article?.date;
   const finalReadTime = readTime || article?.readTime;
   const finalImageAlt = imageAlt || article?.imageAlt || finalTitle;
-  const finalImageUrl = imageUrl || null;
-  const finalHref = href || (article?.slug ? `/stories/${article.slug}` : '#');
+  const finalImageUrl = imageUrl || article?.imageUrl || article?.image || null;
+  const finalHref = href || (article?.slug ? `/stories/${article.slug}` : '/stories');
   const finalLayout = variant || layout;
 
   if (loading) {
     return (
-      <div className={cn("bg-white border border-line rounded-lg overflow-hidden", finalLayout === 'horizontal' ? 'flex flex-row' : 'flex flex-col', className)}>
-        <div className={cn("bg-slate-100 animate-pulse", finalLayout === 'horizontal' ? 'w-48 h-auto' : 'w-full aspect-[3/2]')}></div>
+      <div className={cn("bg-[var(--surface-card)] border border-[var(--border)] rounded-lg overflow-hidden", finalLayout === 'horizontal' ? 'flex flex-row' : 'flex flex-col', className)}>
+        <div className={cn("bg-[var(--surface-skeleton)] animate-pulse", finalLayout === 'horizontal' ? 'w-48 h-auto' : 'w-full aspect-[3/2]')}></div>
         <div className="p-4 flex flex-col gap-3 flex-1">
-          <div className="w-16 h-3 bg-slate-200 rounded"></div>
-          <div className="w-full h-6 bg-slate-200 rounded"></div>
-          <div className="w-3/4 h-6 bg-slate-200 rounded"></div>
-          <div className="w-full h-4 bg-slate-100 rounded mt-2"></div>
-          <div className="w-5/6 h-4 bg-slate-100 rounded"></div>
+          <div className="w-16 h-3 bg-[var(--surface-skeleton)] rounded"></div>
+          <div className="w-full h-6 bg-[var(--surface-skeleton)] rounded"></div>
+          <div className="w-3/4 h-6 bg-[var(--surface-skeleton)] rounded"></div>
+          <div className="w-full h-4 bg-[var(--surface-skeleton)] rounded mt-2"></div>
+          <div className="w-5/6 h-4 bg-[var(--surface-skeleton)] rounded"></div>
         </div>
       </div>
     );
@@ -79,13 +81,14 @@ const StoryCard = React.memo(function StoryCard({
 
   return (
     <article className={cn(
-      "group block bg-[var(--surface-card)] border border-line rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-royal focus:ring-offset-2 transition-shadow duration-250 hover:shadow-hover",
+      "group block bg-[var(--surface-card)] border border-[var(--border)] rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 transition-shadow duration-250 hover:shadow-hover",
       isHorizontal ? "flex flex-col sm:flex-row" : "flex flex-col",
-      className
+      className,
+      editorial && 'home-story-card'
     )}>
       {/* Image container */}
       <Link href={finalHref || '/stories'} aria-label={`Read ${finalTitle}`} className={cn(
-        "relative overflow-hidden bg-navy-50 shrink-0",
+        "story-media relative overflow-hidden bg-[var(--surface-tint)] shrink-0",
         isHorizontal ? (finalLayout === 'compact' ? "w-full sm:w-28 sm:h-28" : "w-full sm:w-60 h-48 sm:h-auto") : "w-full aspect-[3/2]",
         finalLayout === 'lead' && "aspect-[16/7]"
       )}>
@@ -102,7 +105,7 @@ const StoryCard = React.memo(function StoryCard({
           <PlaceholderImage />
         )}
         {sponsored && (
-          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded text-navy-900 shadow">
+          <div className="absolute top-2 right-2 bg-[var(--surface-card)]/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded text-[var(--text-heading)] shadow">
             Sponsored
           </div>
         )}
@@ -110,11 +113,11 @@ const StoryCard = React.memo(function StoryCard({
 
       {/* Content container */}
       <div className={cn(
-        "flex flex-col flex-1",
+        "story-copy flex flex-col flex-1",
         isHorizontal ? "p-4 sm:p-5 justify-center" : "p-5"
       )}>
         {finalKicker && (
-          <span className="text-brand-red text-[12px] leading-[16px] font-semibold tracking-[0.08em] uppercase mb-2">
+          <span className="text-[var(--text-accent)] text-[12px] leading-[16px] font-semibold tracking-[0.08em] uppercase mb-2">
             {finalKicker}
           </span>
         )}
@@ -124,7 +127,7 @@ const StoryCard = React.memo(function StoryCard({
           finalLayout === 'lead' ? "text-[clamp(26px,2.6vw,34px)] leading-tight" : "text-[19px] sm:text-[22px] leading-[30px]"
         )}>
           <Link href={finalHref || '/stories'}>{finalTitle}</Link>
-          <span className="absolute left-0 bottom-0 w-full h-[2px] bg-brand-red scale-x-0 origin-left transition-transform duration-250 ease-standard group-hover:scale-x-100"></span>
+          <span className="absolute left-0 bottom-0 w-full h-[2px] bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-250 ease-standard group-hover:scale-x-100"></span>
         </h3>
 
         {finalSummary && finalLayout !== 'compact' && (
@@ -140,7 +143,7 @@ const StoryCard = React.memo(function StoryCard({
           {finalDate && finalReadTime && <span>&middot;</span>}
           {finalReadTime && <span>{finalReadTime}</span>}
           
-          <button type="button" aria-label={`${saved ? 'Remove' : 'Save'} ${finalTitle}`} aria-pressed={saved} className={cn("ml-auto transition-colors", saved ? "text-brand-red" : "text-slate-400 hover:text-navy-900")} onClick={() => setSaved(value => !value)}>
+          <button type="button" aria-label={`${saved ? 'Remove' : 'Save'} ${finalTitle}`} aria-pressed={saved} className={cn("ml-auto transition-colors", saved ? "text-[var(--text-accent)]" : "text-[var(--text-meta)] hover:text-[var(--text-heading)]")} onClick={() => setSaved(value => !value)}>
             <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 2C1 1.44772 1.44772 1 2 1H10C10.5523 1 11 1.44772 11 2V12.618C11 12.9463 10.5843 13.0898 10.3807 12.8364L6 7.38197L1.6193 12.8364C1.41566 13.0898 1 12.9463 1 12.618V2Z" />
             </svg>

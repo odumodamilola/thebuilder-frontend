@@ -16,7 +16,7 @@ export default function UtilityBar() {
   })
 
   return (
-    <div className="h-utility bg-navy-950 flex items-center justify-between px-4 md:px-6 text-[12px] font-ui text-slate-300">
+    <div className="h-utility bg-[var(--surface-inverse-deep)] flex items-center justify-between px-4 md:px-6 text-[12px] font-ui text-[var(--text-meta-on-inverse)]">
       <div className="flex items-center gap-4">
         <div className="flex gap-[2px]">
           {['Nigeria', 'Australia'].map((e) => (
@@ -24,7 +24,7 @@ export default function UtilityBar() {
               key={e}
               onClick={() => setEdition(e as 'Nigeria' | 'Australia')}
               aria-pressed={edition === e}
-              className={cn("h-6 px-2 rounded font-semibold whitespace-nowrap", edition === e ? "bg-white/15 text-white" : "text-slate-300")}
+              className={cn("h-6 px-2 rounded font-semibold whitespace-nowrap", edition === e ? "bg-[var(--surface-card)]/15 text-[var(--text-on-inverse)]" : "text-[var(--text-meta-on-inverse)]")}
             >
               {e}
             </button>
@@ -33,12 +33,12 @@ export default function UtilityBar() {
         <span suppressHydrationWarning className="hidden lg:inline">{d}</span>
       </div>
       <div className="flex items-center gap-[14px]">
-        <div aria-label="Colour theme" className="hidden items-center rounded-full border border-white/10 p-0.5 lg:flex">
-          {([['light', Sun], ['dark', Moon], ['system', Laptop]] as const).map(([value, Icon]) => <button key={value} type="button" onClick={() => setTheme(value)} aria-label={`${value.charAt(0).toUpperCase()}${value.slice(1)} theme`} aria-pressed={theme === value} className={cn('flex h-6 w-6 items-center justify-center rounded-full text-slate-300', theme === value && 'bg-white/10 text-white')}><Icon aria-hidden="true" className="h-3 w-3" /></button>)}
+        <div aria-label="Colour theme" className="hidden items-center rounded-full border border-[var(--border-inverse)] p-0.5 lg:flex">
+          {([['light', Sun], ['dark', Moon], ['system', Laptop]] as const).map(([value, Icon]) => <button key={value} type="button" onClick={() => setTheme(value)} aria-label={`${value.charAt(0).toUpperCase()}${value.slice(1)} theme`} aria-pressed={theme === value} className={cn('flex h-6 w-6 items-center justify-center rounded-full text-[var(--text-meta-on-inverse)]', theme === value && 'bg-[var(--surface-card)]/10 text-[var(--text-on-inverse)]')}><Icon aria-hidden="true" className="h-3 w-3" /></button>)}
         </div>
-        <div aria-hidden="true" className="hidden items-center gap-3 text-slate-300 xl:flex"><Linkedin className="h-3 w-3" /><span className="text-[11px] font-bold">𝕏</span><span>◎</span><span>▶</span></div>
-        <Link href="/nominate" className="flex items-center gap-[6px] text-white hover:text-red-400 transition-colors font-semibold whitespace-nowrap">
-          <span className="w-[6px] h-[6px] bg-brand-red rounded-sm"></span>
+        <div aria-hidden="true" className="hidden items-center gap-3 text-[var(--text-meta-on-inverse)] xl:flex"><Linkedin className="h-3 w-3" /><span className="text-[11px] font-bold">𝕏</span><span>◎</span><span>▶</span></div>
+        <Link href="/nominate" className="flex items-center gap-[6px] text-[var(--text-on-inverse)] hover:text-[var(--text-on-inverse)] transition-colors font-semibold whitespace-nowrap">
+          <span className="w-[6px] h-[6px] bg-[var(--accent)] rounded-sm"></span>
           Nominate a Builder
         </Link>
       </div>

@@ -85,7 +85,7 @@ const config: Config = {
 
       /* ─── Shadows ─── */
       boxShadow: {
-        'hover': '0 8px 24px rgba(11,32,70,0.08)',
+        'hover': 'var(--shadow-hover)',
         'overlay': '0 24px 64px rgba(7,22,49,0.24)',
         'drag': '0 16px 40px rgba(11,32,70,0.18)',
       },

@@ -1,6 +1,6 @@
-import { http, type ApiEnvelope } from '@/lib/http'
+import { http, setApiToken, type ApiEnvelope } from '@/lib/http'
 
-export type AuthUser = { id: string; name: string; email: string; onboardingComplete: boolean }
+export type AuthUser = { id: string; name: string; email: string; onboardingComplete: boolean; token?: string }
 export type LoginInput = { email: string; password: string }
 export type RegisterInput = LoginInput & { name: string; country?: string; city?: string; profession?: string }
 export type OnboardingInput = { interests: string[]; country?: string; city?: string; profession?: string }
@@ -10,8 +10,9 @@ export type NominationInput = { type: 'Builder' | 'Startup'; name: string; indus
 // These adapters are the sole Laravel boundary for this feature. They intentionally
 // perform no client-side session or authorization simulation.
 export const accountApi = {
-  login: (input: LoginInput) => http<ApiEnvelope<AuthUser>>('/auth/login', { method: 'POST', body: input }),
-  register: (input: RegisterInput) => http<ApiEnvelope<AuthUser>>('/auth/register', { method: 'POST', body: input }),
+  login: async (input: LoginInput) => { const result = await http<ApiEnvelope<AuthUser>>('/auth/login', { method: 'POST', body: input }); setApiToken(result.data.token ?? null); return result },
+  register: async (input: RegisterInput) => { const result = await http<ApiEnvelope<AuthUser>>('/auth/register', { method: 'POST', body: input }); setApiToken(result.data.token ?? null); return result },
+  logout: async () => { await http<ApiEnvelope<null>>('/logout', { method: 'POST' }); setApiToken(null) },
   resendVerification: (email: string) => http<ApiEnvelope<null>>('/auth/email/verification-notification', { method: 'POST', body: { email } }),
   forgotPassword: (email: string) => http<ApiEnvelope<null>>('/auth/forgot-password', { method: 'POST', body: { email } }),
   resetPassword: (input: { token: string; email: string; password: string; password_confirmation: string }) => http<ApiEnvelope<null>>('/auth/reset-password', { method: 'POST', body: input }),

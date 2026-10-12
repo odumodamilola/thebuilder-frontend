@@ -8,12 +8,12 @@ interface DeadlineChipProps {
 }
 
 function DeadlineChip({ daysLeft }: DeadlineChipProps) {
-  const isUrgent = daysLeft <= 7 && daysLeft >= 0;
+  const isUrgent = daysLeft < 7 && daysLeft >= 0;
   const isClosed = daysLeft < 0;
   
   if (isClosed) {
     return (
-      <span role="status" aria-label="Closed" className="inline-flex items-center h-6 px-3 rounded-full text-[13px] font-medium bg-line text-slate">
+      <span role="status" aria-label="Closed" className="inline-flex items-center h-6 px-3 rounded-full text-[13px] font-medium text-[var(--text-meta)] line-through">
         Closed
       </span>
     );
@@ -25,8 +25,8 @@ function DeadlineChip({ daysLeft }: DeadlineChipProps) {
       aria-label={`Deadline: ${daysLeft} days remaining`}
       className={`inline-flex items-center h-6 px-3 rounded-full text-[13px] font-medium ${
         isUrgent
-          ? 'bg-red-50 text-brand-red'
-          : 'bg-navy-50 text-navy-900'
+          ? 'bg-[var(--accent)] text-[var(--text-on-inverse)]'
+          : 'bg-[var(--surface-tint)] text-[var(--text-heading)]'
       }`}
     >
       {daysLeft} days left
@@ -52,20 +52,20 @@ const OpportunityRow = React.memo(function OpportunityRow({
   href,
 }: OpportunityRowProps) {
   return (
-    <li className="flex flex-col sm:flex-row sm:items-center py-5 border-b border-line gap-4 hover:bg-navy-50/50 transition-colors group list-none">
+    <li className="flex flex-col sm:flex-row sm:items-center py-5 border-b border-[var(--border)] gap-4 hover:bg-[var(--surface-hover)] transition-colors group list-none">
       <div className="flex-1 min-w-0 flex flex-col gap-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate">{org}</span>
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium bg-navy-50 text-navy-900">
+          <span className="text-sm font-semibold text-[var(--text-meta)]">{org}</span>
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium bg-[var(--surface-tint)] text-[var(--text-heading)]">
             {type}
           </span>
         </div>
-        <Link href={href || '#'} className="group-hover:text-royal transition-colors">
-          <h3 className="font-display font-bold text-xl leading-tight text-navy-900">
+        <Link href={href || '#'} className="group-hover:text-[var(--text-royal)] transition-colors">
+          <h3 className="font-display font-bold text-xl leading-tight text-[var(--text-heading)]">
             {title}
           </h3>
         </Link>
-        <div className="flex items-center gap-3 text-[14px] text-slate">
+        <div className="flex items-center gap-3 text-[14px] text-[var(--text-meta)]">
           <span className="flex items-center gap-1">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
             {location}
@@ -77,7 +77,7 @@ const OpportunityRow = React.memo(function OpportunityRow({
         <Link
           href={href}
           aria-label={`View ${title}`}
-          className="inline-flex items-center justify-center h-9 px-4 rounded-lg text-sm font-medium border border-line bg-white text-navy-900 hover:bg-navy-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-royal focus-visible:ring-offset-2 whitespace-nowrap"
+          className="inline-flex items-center justify-center h-9 px-4 rounded-lg text-sm font-medium border border-[var(--border)] bg-[var(--surface-card)] text-[var(--text-heading)] hover:bg-[var(--surface-tint)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 whitespace-nowrap"
         >
           View opportunity →
         </Link>

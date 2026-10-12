@@ -20,7 +20,7 @@ export default function NewsletterForm({ className }: { className?: string }) {
   }
 
   if (status === 'success') {
-    return <div role="status" className="text-sm font-medium text-green-400">Thanks for subscribing! Check your inbox to confirm.</div>
+    return <div role="status" className="text-sm font-medium text-[var(--text-on-inverse)]"><span aria-hidden="true">✓ </span>Thanks for subscribing! Check your inbox to confirm.</div>
   }
 
   return (
@@ -37,18 +37,18 @@ export default function NewsletterForm({ className }: { className?: string }) {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           aria-describedby={status === 'error' ? `${emailId}-error` : undefined}
-          className="min-h-12 min-w-0 flex-1 rounded-control border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-royal"
+          className="min-h-12 min-w-0 flex-1 rounded-control border border-[var(--border-inverse)] bg-[var(--surface-card)]/5 px-4 py-3 text-sm text-[var(--text-on-inverse)] placeholder:text-[var(--text-meta-on-inverse)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--surface-inverse)]"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="min-h-12 bg-brand-red text-white px-6 py-3 rounded-control text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50"
+          className="min-h-12 bg-[var(--accent)] text-[var(--text-on-inverse)] px-6 py-3 rounded-control text-sm font-semibold hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50"
         >
           {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
         </button>
       </div>
-      {status === 'error' && <div id={`${emailId}-error`} role="alert" className="text-sm text-red-300">Subscription failed. Please try again.</div>}
-      <p className="text-xs text-slate-300">Weekly, every Friday. Unsubscribe any time.</p>
+      {status === 'error' && <div id={`${emailId}-error`} role="alert" className="rounded-md bg-[var(--surface-accent-soft)] p-3 text-sm text-[var(--text-error)]"><span aria-hidden="true">! </span>Subscription failed. Please try again.</div>}
+      <p className="text-xs text-[var(--text-meta-on-inverse)]">Weekly, every Friday. Unsubscribe any time.</p>
     </form>
   )
 }
