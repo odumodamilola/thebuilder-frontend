@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import type { Article } from '@/lib/types';
 import PlaceholderImage from '../ui/PlaceholderImage';
+import { useState } from 'react';
 
 export type CardVariant = 'vertical' | 'horizontal' | 'lead' | 'compact';
 
@@ -46,6 +47,7 @@ const StoryCard = React.memo(function StoryCard({
   sponsored = false,
   className
 }: StoryCardProps) {
+  const [saved, setSaved] = useState(false);
   // Coalesce props from article if provided
   const finalKicker = kicker || article?.kicker;
   const finalTitle = title || article?.title || '';
@@ -76,13 +78,13 @@ const StoryCard = React.memo(function StoryCard({
   const isHorizontal = finalLayout === 'horizontal' || finalLayout === 'compact';
 
   return (
-    <Link href={finalHref || '#'} className={cn(
-      "group block bg-white border border-line rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-royal focus:ring-offset-2 transition-shadow duration-250 hover:shadow-hover",
+    <article className={cn(
+      "group block bg-[var(--surface-card)] border border-line rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-royal focus:ring-offset-2 transition-shadow duration-250 hover:shadow-hover",
       isHorizontal ? "flex flex-col sm:flex-row" : "flex flex-col",
       className
     )}>
       {/* Image container */}
-      <div className={cn(
+      <Link href={finalHref || '/stories'} aria-label={`Read ${finalTitle}`} className={cn(
         "relative overflow-hidden bg-navy-50 shrink-0",
         isHorizontal ? (finalLayout === 'compact' ? "w-full sm:w-28 sm:h-28" : "w-full sm:w-60 h-48 sm:h-auto") : "w-full aspect-[3/2]",
         finalLayout === 'lead' && "aspect-[16/7]"
@@ -104,7 +106,7 @@ const StoryCard = React.memo(function StoryCard({
             Sponsored
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Content container */}
       <div className={cn(
@@ -118,34 +120,34 @@ const StoryCard = React.memo(function StoryCard({
         )}
         
         <h3 className={cn(
-          "font-display font-bold text-navy-900 mb-2 relative inline-block text-balance w-fit",
+          "font-display font-bold text-[var(--text-heading)] mb-2 relative inline-block text-balance w-fit",
           finalLayout === 'lead' ? "text-[clamp(26px,2.6vw,34px)] leading-tight" : "text-[19px] sm:text-[22px] leading-[30px]"
         )}>
-          {finalTitle}
+          <Link href={finalHref || '/stories'}>{finalTitle}</Link>
           <span className="absolute left-0 bottom-0 w-full h-[2px] bg-brand-red scale-x-0 origin-left transition-transform duration-250 ease-standard group-hover:scale-x-100"></span>
         </h3>
 
         {finalSummary && finalLayout !== 'compact' && (
-          <p className="text-slate text-[15px] sm:text-[17px] leading-relaxed mb-4 line-clamp-2">
+          <p className="text-[var(--text-meta)] text-[15px] sm:text-[17px] leading-relaxed mb-4 line-clamp-2">
             {finalSummary}
           </p>
         )}
 
-        <div className="mt-auto flex items-center gap-2 text-[13px] leading-[18px] text-slate-500 font-ui flex-wrap pt-2">
-          {finalAuthor && <span className="font-bold text-navy-900">{finalAuthor}</span>}
+        <div className="mt-auto flex items-center gap-2 text-[13px] leading-[18px] text-[var(--text-meta)] font-ui flex-wrap pt-2">
+          {finalAuthor && <span className="font-bold text-[var(--text-heading)]">{finalAuthor}</span>}
           {finalAuthor && (finalDate || finalReadTime) && <span>&middot;</span>}
           {finalDate && <span>{finalDate}</span>}
           {finalDate && finalReadTime && <span>&middot;</span>}
           {finalReadTime && <span>{finalReadTime}</span>}
           
-          <button className="ml-auto text-slate-400 hover:text-navy-900 transition-colors" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+          <button type="button" aria-label={`${saved ? 'Remove' : 'Save'} ${finalTitle}`} aria-pressed={saved} className={cn("ml-auto transition-colors", saved ? "text-brand-red" : "text-slate-400 hover:text-navy-900")} onClick={() => setSaved(value => !value)}>
             <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 2C1 1.44772 1.44772 1 2 1H10C10.5523 1 11 1.44772 11 2V12.618C11 12.9463 10.5843 13.0898 10.3807 12.8364L6 7.38197L1.6193 12.8364C1.41566 13.0898 1 12.9463 1 12.618V2Z" />
             </svg>
           </button>
         </div>
       </div>
-    </Link>
+    </article>
   );
 });
 

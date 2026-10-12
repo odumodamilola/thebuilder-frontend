@@ -1,0 +1,1 @@
+import { useRouter } from 'next/router'; import { ProfileEditor } from '@/features/console/ConsolePages'; export default function Page(){return <ProfileEditor kind="builder" state={useRouter().query.state}/>}

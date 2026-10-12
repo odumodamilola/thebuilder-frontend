@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useEdition } from '@/context/EditionContext';
 import { useToast } from '@/context/ToastContext';
 import HomeHero from '@/components/sections/HomeHero';
@@ -18,17 +18,19 @@ export default function HomePage() {
   const { edition } = useEdition();
   const { toast } = useToast();
 
-  const [loading, setLoading] = useState(false);
-  const [sponsored, setSponsored] = useState(false);
-  const [showTrending, setShowTrending] = useState(true);
-  const [showVideos, setShowVideos] = useState(true);
+  const { query } = useRouter();
+  const state = String(query.state || 'default');
+  const loading = state === 'loading';
+  const sponsored = state === 'sponsored';
+  const showTrending = state !== 'hidden';
+  const showVideos = state !== 'hidden';
 
   const handleToast = (msg: string) => {
     toast(msg);
   };
 
   return (
-    <div data-screen-label="Home">
+    <main data-screen-label="Home">
       <HomeHero loading={loading} edition={edition} />
       <HomeLatest loading={loading} edition={edition} sponsored={sponsored} onToast={handleToast} />
       {showTrending && <HomeTrending />}
@@ -40,6 +42,6 @@ export default function HomePage() {
       <HomeNominate />
       <HomeMostRead loading={loading} />
       <HomeNewsletter />
-    </div>
+    </main>
   );
 }

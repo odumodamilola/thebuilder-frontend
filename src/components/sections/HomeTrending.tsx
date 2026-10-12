@@ -10,7 +10,7 @@ export default function HomeTrending() {
   ]
 
   return (
-    <section className="bg-slate-50 py-section-mobile md:py-section px-4 md:px-6 border-y border-line">
+    <section className="bg-[var(--surface-card)] py-section-mobile md:py-section px-4 md:px-6 border-y border-line">
       <div className="max-w-container mx-auto">
         <div className="mb-8">
           <SectionTitle>Trending</SectionTitle>
@@ -24,7 +24,7 @@ export default function HomeTrending() {
               >
                 {i + 1}
               </span>
-              <h4 className="font-display font-bold text-navy-900 group-hover:text-brand-red transition-colors text-[15px] leading-snug">
+              <h4 className="font-display font-bold text-[var(--text-heading)] group-hover:text-brand-red transition-colors text-[15px] leading-snug">
                 {title}
               </h4>
             </li>

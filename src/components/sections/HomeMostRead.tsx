@@ -19,7 +19,7 @@ export default function HomeMostRead({ loading }: { loading?: boolean }) {
             <span className="font-display font-bold text-2xl text-brand-red opacity-80 leading-none group-hover:opacity-100 transition-opacity">
               0{i + 1}
             </span>
-            <h4 className="font-display font-bold text-navy-900 group-hover:text-brand-red transition-colors text-[16px] leading-snug">
+            <h4 className="font-display font-bold text-[var(--text-heading)] group-hover:text-brand-red transition-colors text-[16px] leading-snug">
               {title}
             </h4>
           </div>

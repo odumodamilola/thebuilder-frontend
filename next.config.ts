@@ -21,10 +21,26 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api',
   },
 
+  // Keep Turbopack scoped to this application. A separate lockfile exists in
+  // the Windows user profile and must not influence dependency discovery.
+  turbopack: {
+    root: process.cwd(),
+  },
+
   // Experimental features available in Next.js 16
   experimental: {
     // Optimise package imports to reduce bundle size
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
+
+  async redirects() {
+    return [
+      { source: '/home', destination: '/', permanent: true },
+      { source: '/industries', destination: '/category/fintech', permanent: false },
+      { source: '/industries/:slug', destination: '/category/:slug', permanent: false },
+      { source: '/team', destination: '/about#team', permanent: false },
+      { source: '/careers', destination: '/about#careers', permanent: false },
+    ]
   },
 }
 

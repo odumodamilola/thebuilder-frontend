@@ -31,6 +31,8 @@ export function EditionProvider({ children }: { children: React.ReactNode }) {
 
 export function useEdition() {
   const ctx = useContext(EditionContext)
-  if (!ctx) throw new Error('useEdition must be used within EditionProvider')
+  if (!ctx) {
+    return { edition: 'Nigeria' as Edition, setEdition: () => {} }
+  }
   return ctx
 }

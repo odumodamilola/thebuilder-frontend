@@ -1,157 +1,87 @@
-'use client'
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Search, Menu, X, ChevronDown } from 'lucide-react'
+import { useRouter } from 'next/router'
+import { ChevronDown, Menu, Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Wordmark from '../brand/Wordmark'
+import UtilityBar from './UtilityBar'
+import { SearchPalette } from '../ui/SearchPalette'
 
+const MEGA = {
+  Stories: [['Founder Stories', '/stories?category=founder-stories'], ['Interviews', '/stories?category=interviews'], ['Analysis', '/stories?category=analysis'], ['Opinion', '/stories?category=opinion'], ['Business', '/stories?category=business'], ['Diaspora', '/stories?category=diaspora']],
+  Industries: [['Fintech', '/industries/fintech'], ['HealthTech', '/industries/healthtech'], ['AgriTech', '/industries/agritech'], ['EdTech', '/industries/edtech'], ['Creative Economy', '/industries/creative-economy'], ['Energy', '/industries/energy']],
+} as const
 const NAV = [
   { label: 'Home', href: '/' },
-  { label: 'Stories', href: '/stories', hasDropdown: true },
+  { label: 'Stories', href: '/stories' },
   { label: 'Startups', href: '/startups' },
   { label: 'The Builders', href: '/builders' },
   { label: 'Diaspora', href: '/diaspora' },
-  { label: 'Industries', href: '/industries', hasDropdown: true },
+  { label: 'Industries', href: '/industries' },
   { label: 'Videos', href: '/videos' },
   { label: 'Opportunities', href: '/opportunities' },
-  { label: 'Events', href: '/events', badge: 'Soon' },
+  { label: 'Events', href: '/events' },
   { label: 'About', href: '/about' },
 ]
 
-const MEGA: Record<string, string[][]> = {
-  Stories: [['Founder Stories', 'Interviews', 'Analysis', 'Opinion'], ['Business', 'Diaspora', 'Press Releases', 'Profiles']],
-  Industries: [['Fintech', 'HealthTech', 'AgriTech', 'EdTech'], ['Creative Economy', 'Energy', 'Logistics', 'Climate']]
-};
-
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false)
+  const router = useRouter()
+  const [compact, setCompact] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [mega, setMega] = useState<string | null>(null)
-  const pathname = usePathname()
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [mega, setMega] = useState<keyof typeof MEGA | null>(null)
+  const closeButton = useRef<HTMLButtonElement>(null)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const drawer = useRef<HTMLDivElement>(null)
 
+  useEffect(() => { const onScroll = () => setCompact(window.scrollY > 80); onScroll(); window.addEventListener('scroll', onScroll, { passive: true }); return () => window.removeEventListener('scroll', onScroll) }, [])
+  useEffect(() => { const onKey = (event: KeyboardEvent) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setSearchOpen(true) } if (event.key === 'Escape') { setMega(null); setMenuOpen(false) } }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [])
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 80)
+    if (!menuOpen) return
+    const previous = document.body.style.overflow
+    const trigger = menuButton.current
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !drawer.current) return
+      const focusable = Array.from(drawer.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (!first || !last) return
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', trapFocus)
+    closeButton.current?.focus()
+    return () => {
+      document.body.style.overflow = previous
+      document.removeEventListener('keydown', trapFocus)
+      trigger?.focus()
+    }
+  }, [menuOpen])
 
-  return (
-    <>
-      <header
-        onMouseLeave={() => setMega(null)}
-        className={cn(
-          'sticky top-0 z-50 bg-white transition-all duration-300 flex items-center gap-[20px] px-[16px] lg:px-[24px]',
-          scrolled || mega ? 'h-[60px] border-b border-line shadow-sm' : 'h-[72px] border-b border-transparent'
-        )}
-      >
-        <Link href="/">
-          <Wordmark />
-        </Link>
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-[12px] min-w-0 overflow-hidden h-full">
-          {NAV.map((item) => (
-            <Link key={item.href}
-              href={item.href || '#'}
-              onMouseEnter={() => setMega(MEGA[item.label] ? item.label : null)}
-              className={cn(
-                'relative text-[13.5px] font-ui group transition-colors flex items-center gap-[4px] h-[44px] px-[2px] mt-auto mb-auto',
-                pathname === item.href ? 'text-navy-900 font-semibold' : item.badge ? 'text-slate-500 font-medium' : 'text-navy-900 font-medium'
-              )}
-            >
-              {item.label}
-              {item.hasDropdown && (
-                <ChevronDown className="w-[14px] h-[14px]" />
-              )}
-              {item.badge && (
-                <span className="text-[10px] font-bold bg-navy-50 text-slate-500 px-[5px] py-[1px] rounded-full uppercase tracking-wide">
-                  {item.badge}
-                </span>
-              )}
-              <span
-                className={cn(
-                  'absolute bottom-[6px] left-0 right-0 h-[2px] bg-brand-red origin-left transition-transform duration-250',
-                  pathname === item.href || mega === item.label ? 'scale-x-100' : 'scale-x-0'
-                )}
-              />
+  const isActive = (href: string) => href === '/' ? router.pathname === '/' || router.pathname === '/home' : router.pathname.startsWith(href)
+  return <>
+    <UtilityBar />
+    <header className={cn('sticky top-0 z-40 border-b bg-[var(--surface-card)] transition-[height,box-shadow] duration-small', compact || mega ? 'h-header-compact border-line shadow-sm' : 'h-header border-transparent')}>
+      <div className="mx-auto flex h-full max-w-container items-center gap-5 px-4 lg:px-6">
+        <Link href="/" aria-label="The Builder home"><Wordmark /></Link>
+        <nav aria-label="Primary" className="hidden h-full min-w-0 flex-1 items-center justify-center gap-3 overflow-hidden xl:flex">
+          {NAV.map(item => { const menu = item.label in MEGA ? item.label as keyof typeof MEGA : null; return <div key={item.href} className="flex h-full items-center" onMouseEnter={() => setMega(menu)} onMouseLeave={() => menu && setMega(null)}>
+            <Link href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} aria-expanded={menu ? mega === menu : undefined} aria-haspopup={menu ? 'menu' : undefined} onFocus={() => setMega(menu)} className={cn('relative flex h-11 items-center gap-1 whitespace-nowrap px-0.5 font-ui text-[13.5px] font-medium text-[var(--text-heading)]', isActive(item.href) && 'font-semibold')}>
+              {item.label}{menu && <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" />}<span aria-hidden="true" className={cn('absolute inset-x-0 bottom-1.5 h-0.5 origin-left bg-brand-red transition-transform duration-small', isActive(item.href) || mega === menu ? 'scale-x-100' : 'scale-x-0')} />
             </Link>
-          ))}
+            {menu && mega === menu && <div role="menu" aria-label={`${menu} sections`} className="absolute inset-x-0 top-full border-b border-line bg-[var(--surface-card)] shadow-overlay" onMouseEnter={() => setMega(menu)} onMouseLeave={() => setMega(null)}><div className="mx-auto grid max-w-container grid-cols-2 gap-x-8 gap-y-1 px-6 py-7">{MEGA[menu].map(([label, href]) => <Link role="menuitem" key={href} href={href} className="min-h-11 rounded-md px-3 py-2 text-[15px] font-medium text-[var(--text-heading)] hover:bg-[var(--surface-tint)]">{label}</Link>)}</div></div>}
+          </div> })}
         </nav>
-        <div className="flex items-center gap-[8px] ml-auto lg:ml-0">
-          <button className="hidden md:flex items-center justify-center h-[40px] min-w-[44px] px-[10px] rounded-[8px] border border-line bg-white hover:bg-navy-50 transition-colors text-navy-900" title="Search (⌘K)">
-            <Search className="w-[18px] h-[18px]" />
-          </button>
-          <button className="hidden md:block bg-brand-red text-white h-[40px] px-[16px] rounded-[8px] text-[15px] font-semibold hover:bg-red-700 transition-colors">
-            Subscribe
-          </button>
-          <a href="/signin" className="hidden md:flex items-center h-[40px] px-[12px] rounded-[8px] text-[15px] font-semibold text-navy-900 hover:bg-navy-50 transition-colors">
-            Sign in
-          </a>
-          <button className="lg:hidden text-navy-900 w-[44px] h-[44px] flex items-center justify-center" onClick={() => setMenuOpen(true)}>
-            <Menu className="w-6 h-6" />
-          </button>
+        <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          <button type="button" onClick={() => setSearchOpen(true)} aria-label="Search" aria-keyshortcuts="Control+K Meta+K" className="tb-control hidden items-center justify-center rounded-md border border-line bg-[var(--surface-card)] text-[var(--text-heading)] hover:bg-[var(--surface-tint)] md:flex"><Search aria-hidden="true" className="h-[18px] w-[18px]" /></button>
+          <Link href="/newsletter" className="hidden h-10 items-center rounded-md bg-brand-red px-4 text-[15px] font-semibold text-white hover:bg-red-700 md:flex">Subscribe</Link>
+          <Link href="/signin" className="hidden h-10 items-center rounded-md px-3 text-[15px] font-semibold text-[var(--text-heading)] hover:bg-[var(--surface-tint)] md:flex">Sign in</Link>
+          <button ref={menuButton} type="button" onClick={() => setMenuOpen(true)} aria-label="Open menu" aria-expanded={menuOpen} className="tb-control flex items-center justify-center text-[var(--text-heading)] xl:hidden"><Menu aria-hidden="true" className="h-6 w-6" /></button>
         </div>
-      </header>
-
-      {mega && (
-        <div 
-          className="hidden lg:block absolute left-0 right-0 top-full bg-white border-b border-line shadow-overlay animate-in fade-in slide-in-from-top-2 duration-250 z-40"
-          onMouseEnter={() => setMega(mega)}
-          onMouseLeave={() => setMega(null)}
-        >
-          <div className="max-w-container mx-auto p-[32px_24px] grid grid-cols-[1fr_1fr_1.4fr] gap-[32px]">
-            {MEGA[mega]?.map((col, i) => (
-              <ul key={i} className="flex flex-col gap-[4px]">
-                {col.map(link => (
-                  <li key={link}>
-                    <a href="#" className="inline-block py-[8px] text-[15px] font-medium text-navy-900 hover:text-navy-700 transition-colors">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ))}
-            <div>{/* Featured area placeholder */}</div>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Menu Overlay */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-[60] bg-[rgba(11,32,70,0.40)] backdrop-blur-md flex justify-end transition-opacity">
-          <div className="w-[80%] max-w-sm bg-white h-full shadow-overlay flex flex-col p-6 animate-in slide-in-from-right">
-            <div className="flex justify-between items-center mb-8">
-              <Wordmark />
-              <button onClick={() => setMenuOpen(false)} className="text-navy-900">
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <nav className="flex flex-col gap-6">
-              {NAV.map((item) => (
-                <Link key={item.href}
-                  href={item.href || '#'}
-                  className={cn(
-                    'text-lg font-bold font-display text-navy-900',
-                    pathname === item.href && 'text-brand-red'
-                  )}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-auto flex flex-col gap-4">
-              <button className="bg-navy-50 text-navy-900 px-4 py-3 rounded-md text-sm font-bold flex items-center justify-center gap-2">
-                <Search className="w-4 h-4" /> Search
-              </button>
-              <button className="bg-brand-red text-white px-4 py-3 rounded-md text-sm font-bold">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  )
+      </div>
+    </header>
+    {menuOpen && <div className="fixed inset-0 z-50 flex justify-end bg-[var(--overlay)] backdrop-blur-[6px]" role="presentation" onMouseDown={event => event.currentTarget === event.target && setMenuOpen(false)}><div ref={drawer} role="dialog" aria-modal="true" aria-label="Site navigation" className="flex h-full w-[min(86%,390px)] flex-col overflow-y-auto bg-[var(--surface-card)] p-6 shadow-overlay"><div className="mb-8 flex items-center justify-between"><Wordmark /><button ref={closeButton} type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu" className="tb-control flex items-center justify-center rounded-md text-[var(--text-heading)]"><X aria-hidden="true" className="h-6 w-6" /></button></div><nav aria-label="Mobile" className="flex flex-col gap-1">{NAV.map(item => <Link key={item.href} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} onClick={() => setMenuOpen(false)} className={cn('flex min-h-11 items-center rounded-md px-3 font-display text-lg font-bold text-[var(--text-heading)] hover:bg-[var(--surface-tint)]', isActive(item.href) && 'text-brand-red')}>{item.label}</Link>)}</nav><div className="mt-auto grid gap-3 pt-8"><button type="button" onClick={() => { setMenuOpen(false); setSearchOpen(true) }} className="min-h-11 rounded-md bg-[var(--surface-tint)] font-semibold text-[var(--text-heading)]">Search</button><Link href="/newsletter" onClick={() => setMenuOpen(false)} className="flex min-h-11 items-center justify-center rounded-md bg-brand-red font-semibold text-white">Subscribe</Link></div></div></div>}
+    <SearchPalette isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+  </>
 }

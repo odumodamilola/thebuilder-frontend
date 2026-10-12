@@ -13,7 +13,7 @@ const BuilderCard = React.memo(({ builder }: BuilderCardProps) => {
   return (
     <Link 
       href={`/builders/${builder.slug || '#'}`}
-      className="group relative flex flex-col bg-white focus:outline-none focus:ring-2 focus:ring-royal transition-all duration-250 hover:-translate-y-1"
+      className="group relative flex flex-col bg-transparent focus:outline-none focus:ring-2 focus:ring-royal transition-all duration-250 hover:-translate-y-1"
     >
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy-50 rounded-lg mb-4">
         {builder.imageUrl ? (
@@ -36,15 +36,15 @@ const BuilderCard = React.memo(({ builder }: BuilderCardProps) => {
           </span>
         </div>
         
-        <h3 className="font-display font-bold text-navy-900 text-[18px] leading-tight mb-1 group-hover:text-brand-red transition-colors">
+        <h3 className="font-display font-bold text-[var(--text-heading)] text-[18px] leading-tight mb-1 group-hover:text-brand-red transition-colors">
           {builder.name}
         </h3>
         
-        <div className="font-ui text-slate-500 text-[13px] flex items-center gap-1 mb-2">
+        <div className="font-ui text-[var(--text-meta)] text-[13px] flex items-center gap-1 mb-2">
           <span className="opacity-80 grayscale">{builder.flag || '📍'}</span> {builder.location}
         </div>
 
-        <p className="font-ui text-slate-600 text-[14px] leading-snug">
+        <p className="font-ui text-[var(--text-body)] text-[14px] leading-snug">
           {builder.headline || builder.bio || `${builder.role} at ${builder.company}`}
         </p>
       </div>

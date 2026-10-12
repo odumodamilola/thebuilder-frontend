@@ -10,7 +10,7 @@ export default function HomePicks({ loading, edition }: any) {
   ] as any[]
 
   return (
-    <section className="bg-white py-section-mobile md:py-section px-4 md:px-6">
+    <section className="bg-[var(--surface-page)] py-section-mobile md:py-section px-4 md:px-6">
       <div className="max-w-container mx-auto">
         <div className="mb-8">
           <SectionTitle>Editor's picks</SectionTitle>

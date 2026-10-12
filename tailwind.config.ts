@@ -2,10 +2,14 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/context/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/features/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/hooks/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -26,13 +30,19 @@ const config: Config = {
         'line': '#E3E7EF',
         'line-dark': 'rgba(255,255,255,0.14)',
         'console-bg': '#F7F8FB',
+        'surface-page': 'var(--surface-page)',
+        'surface-card': 'var(--surface-card)',
+        'surface-tint': 'var(--surface-tint)',
+        'text-body': 'var(--text-body)',
+        'text-heading': 'var(--text-heading)',
+        'text-meta': 'var(--text-meta)',
       },
 
       /* ─── Typography — map next/font CSS vars ─── */
       fontFamily: {
-        display: ['var(--font-montserrat)', 'Montserrat', 'system-ui', 'sans-serif'],
-        ui: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['var(--font-source-serif-4)', 'Source Serif 4', 'Georgia', 'serif'],
+        display: ['Montserrat', 'system-ui', 'sans-serif'],
+        ui: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        serif: ['Source Serif 4', 'Georgia', 'serif'],
       },
 
       /* ─── Font sizes (design scale) ─── */

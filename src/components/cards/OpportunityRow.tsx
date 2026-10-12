@@ -74,15 +74,13 @@ const OpportunityRow = React.memo(function OpportunityRow({
       </div>
       <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-2 shrink-0">
         <DeadlineChip daysLeft={daysLeft} />
-        <a
+        <Link
           href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Apply for ${title} on organiser's site, opens in new tab`}
+          aria-label={`View ${title}`}
           className="inline-flex items-center justify-center h-9 px-4 rounded-lg text-sm font-medium border border-line bg-white text-navy-900 hover:bg-navy-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-royal focus-visible:ring-offset-2 whitespace-nowrap"
         >
-          Apply on organiser's site ↗
-        </a>
+          View opportunity →
+        </Link>
       </div>
     </li>
   );

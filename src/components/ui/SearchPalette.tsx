@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
 
 interface SearchPaletteProps {
@@ -10,28 +11,41 @@ interface SearchPaletteProps {
 }
 
 export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   
   const recent = ['fintech Lagos', 'Haftu Strintzos'];
   const popular = ['Diaspora', 'Fintech', 'Melbourne', 'Grants', 'AgriTech'];
   
   const hasQuery = query.length >= 2;
-  const mockResults = hasQuery ? [
+  const mockResults = useMemo(() => hasQuery ? [
     { id: 'res-1', type: 'Stories', title: 'From the Mountains of Tigray to an Australian Record', href: '/stories/haftu-strintzos-australian-record' },
     { id: 'res-2', type: 'Stories', title: 'Inside the quiet rise of Lagos’ merchant-credit startups', href: '/stories/lagos-merchant-credit-startups' },
     { id: 'res-3', type: 'Builders', title: 'Haftu Strintzos', href: '/builders/haftu-strintzos' },
     { id: 'res-4', type: 'Builders', title: 'Mohamed Semra', href: '/builders/mohamed-semra' },
     { id: 'res-5', type: 'Startups', title: 'Kora Health', href: '/startups/kora-health' },
     { id: 'res-6', type: 'Topics', title: 'Fintech', href: '/search?q=Fintech' },
-  ].filter(r => r.title.toLowerCase().includes(query.toLowerCase())) : [];
+  ].filter(r => r.title.toLowerCase().includes(query.toLowerCase())) : [], [hasQuery, query]);
 
   useEffect(() => {
     if (isOpen) {
-      setQuery('');
-      setActiveIndex(-1);
-      setTimeout(() => inputRef.current?.focus(), 50);
+      returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      const focusTimer = window.setTimeout(() => {
+        setQuery('');
+        setActiveIndex(-1);
+        inputRef.current?.focus();
+      }, 50);
+      return () => {
+        window.clearTimeout(focusTimer);
+        document.body.style.overflow = previousOverflow;
+        returnFocusRef.current?.focus();
+      };
     }
   }, [isOpen]);
 
@@ -45,6 +59,13 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
       
       if (e.key === 'Escape') {
         onClose();
+      } else if (e.key === 'Tab' && panelRef.current) {
+        const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!first || !last) return;
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         setActiveIndex(i => Math.min(i + 1, mockResults.length - 1));
@@ -54,16 +75,16 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
       } else if (e.key === 'Enter') {
         e.preventDefault();
         if (activeIndex >= 0 && mockResults[activeIndex]) {
-          window.location.href = mockResults[activeIndex].href;
+          void router.push(mockResults[activeIndex].href).then(onClose);
         } else if (query.trim()) {
-          window.location.href = `/search?q=${encodeURIComponent(query)}`;
+          void router.push(`/search?q=${encodeURIComponent(query)}`).then(onClose);
         }
       }
     };
     
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, query, activeIndex, mockResults, onClose]);
+  }, [isOpen, query, activeIndex, mockResults, onClose, router]);
 
   if (!isOpen) return null;
 
@@ -73,17 +94,14 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
       onClick={onClose}
     >
       <div 
+        ref={panelRef}
         role="dialog" 
         aria-modal="true" 
         aria-label="Search"
-        className="w-[640px] max-w-[100%] bg-white rounded-md sm:rounded-lg shadow-overlay overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200"
+        className="mx-4 flex max-h-[76vh] w-[640px] max-w-[calc(100%-2rem)] flex-col overflow-hidden rounded-md bg-white shadow-overlay animate-in fade-in zoom-in-95 duration-200 sm:rounded-lg"
         onClick={e => e.stopPropagation()}
       >
         <div 
-          role="combobox" 
-          aria-expanded={query.length > 0} 
-          aria-haspopup="listbox" 
-          aria-owns="search-results"
           className="flex items-center gap-3 px-4 h-16 border-b border-line shrink-0"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-navy-900">
@@ -92,10 +110,11 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
           </svg>
           <input
             ref={inputRef}
-            role="searchbox"
+            role="combobox"
             aria-label="Search The Builder"
             aria-autocomplete="list"
             aria-controls="search-results"
+            aria-expanded={hasQuery}
             aria-activedescendant={activeIndex >= 0 ? `result-${activeIndex}` : undefined}
             value={query}
             onChange={e => { setQuery(e.target.value); setActiveIndex(-1); }}
@@ -105,6 +124,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
           <button 
             type="button" 
             onClick={onClose}
+            aria-label="Close search"
             className="h-7 px-2 border border-line rounded-[6px] bg-white text-[12px] font-medium text-slate hover:bg-slate-50 transition-colors"
           >
             Esc
@@ -151,7 +171,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                     return (
                       <React.Fragment key={res.id}>
                         {isFirstOfGroup && (
-                          <li className="text-[11px] font-semibold tracking-[0.08em] uppercase text-slate px-3 pt-3 pb-1.5">
+                          <li role="presentation" className="text-[11px] font-semibold tracking-[0.08em] uppercase text-slate px-3 pt-3 pb-1.5">
                             {res.type}
                           </li>
                         )}
@@ -160,7 +180,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                           role="option"
                           aria-selected={activeIndex === i}
                           onMouseEnter={() => setActiveIndex(i)}
-                          onClick={() => { window.location.href = res.href; onClose(); }}
+                          onClick={() => { void router.push(res.href).then(onClose); }}
                           className={cn(
                             "flex items-center gap-3 min-h-[44px] px-3 rounded-md cursor-pointer text-[15px] transition-colors",
                             activeIndex === i ? "bg-navy-50 text-navy-900 shadow-[inset_2px_0_0_#D8121B]" : "text-slate hover:bg-slate-50"

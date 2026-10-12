@@ -35,7 +35,7 @@ export default function HomeSpotlight({ loading }: { loading?: boolean }) {
 
         <div className="flex gap-6 overflow-x-auto pb-8 snap-x hide-scrollbar">
           {startups.map((s, i) => (
-            <div key={i} className="min-w-[280px] w-[280px] shrink-0 bg-white rounded-lg p-6 snap-start flex flex-col hover:-translate-y-1 transition-transform cursor-pointer">
+            <div key={i} className="min-w-[280px] w-[280px] shrink-0 bg-navy-950 rounded-lg p-6 snap-start flex flex-col hover:-translate-y-1 transition-transform cursor-pointer border border-white/10">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-14 h-14 bg-navy-900 rounded-xl flex items-center justify-center font-display font-bold text-xl text-white">
                   {s.id}
@@ -45,11 +45,11 @@ export default function HomeSpotlight({ loading }: { loading?: boolean }) {
                   <span>{s.loc}</span>
                 </div>
               </div>
-              <h3 className="font-display font-bold text-navy-900 text-xl mb-2">{s.name}</h3>
-              <p className="text-slate-600 text-sm mb-6 flex-1">{s.desc}</p>
+              <h3 className="font-display font-bold text-white text-xl mb-2">{s.name}</h3>
+              <p className="text-slate-300 text-sm mb-6 flex-1">{s.desc}</p>
               <div className="flex gap-2">
                 {s.tags.map(t => (
-                  <span key={t} className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[11px] font-semibold tracking-wide">
+                  <span key={t} className="px-2 py-1 bg-white/5 text-slate-300 rounded text-[11px] font-semibold tracking-wide">
                     {t}
                   </span>
                 ))}
