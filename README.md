@@ -1,9 +1,10 @@
 # The Builder — Frontend
 
-Next.js 14 + TypeScript + Tailwind CSS MVP frontend.
+Next.js 16 + React 19 + TypeScript + Tailwind CSS MVP frontend.
 
 ## Tech Stack
-- Next.js 14 (App Router)
+- Next.js 16 (Pages Router)
+- React 19
 - TypeScript
 - Tailwind CSS v3
 - Lucide React (icons)
@@ -17,7 +18,7 @@ npm run dev
 
 ## Environment Variables
 Copy `.env.local.example` to `.env.local`
-`NEXT_PUBLIC_API_URL=http://localhost:8000/api`
+`NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1`
 
 ## API Integration
 All API calls are stubbed in `src/lib/api.ts` with TODO comments.
