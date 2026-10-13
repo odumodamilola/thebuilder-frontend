@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script id="tb-theme-init">(function(){try{var p=localStorage.getItem('tb-theme')||'system';var d=p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+</helmet>
+<x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.PosterBand" aria-label="Startup Spotlight" circles="right" padding="var(--section-y) 0" hint-size="100%,520px">
+  <div data-screen-label="Home · Startup Spotlight" style="max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,24px);font-family:var(--font-ui)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px">
+      <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.SectionTitle" title="Startup Spotlight" inverse="{{ true }}" description="Early-stage companies our editors are watching this quarter." hint-size="60%,96px"></x-import>
+      <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;gap:8px;margin-bottom:32px">
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.IconButton" icon="arrow-left" label="Previous startups" variant="inverse" on-click="{{ prev }}" hint-size="44px,44px"></x-import>
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.IconButton" icon="arrow-right" label="Next startups" variant="inverse" on-click="{{ next }}" hint-size="44px,44px"></x-import>
+        </div>
+      </sc-if>
+    </div>
+    <div ref="{{ scrollerRef }}" role="region" aria-label="Startups, scroll horizontally" tabindex="0" onPointerDown="{{ dragStart }}" onPointerMove="{{ dragMove }}" onPointerUp="{{ dragEnd }}" onPointerCancel="{{ dragEnd }}" onClickCapture="{{ dragClick }}" style="display:grid;grid-auto-flow:column;grid-auto-columns:{{ col }};gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 16px;margin:0 -4px;scrollbar-width:none;cursor:grab;user-select:none">
+      <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ sk4 }}" as="k" hint-placeholder-count="4">
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Skeleton" inverse="{{ true }}" height="232" radius="12" hint-size="100%,232px"></x-import>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ startups }}" as="s" hint-placeholder-count="5">
+          <div style="scroll-snap-align:start;display:flex">
+            <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.StartupCard" name="{{ s.name }}" one-liner="{{ s.oneLiner }}" industry="{{ s.industry }}" stage="{{ s.stage }}" flag="{{ s.flag }}" hq="{{ s.hq }}" tilt="{{ true }}" inverse="{{ true }}" on-click="{{ noop }}" dc-props="{{ cardProps }}" hint-size="100%,232px"></x-import>
+          </div>
+        </sc-for>
+      </sc-if>
+    </div>
+  </div>
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;loading&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { w: window.innerWidth };
+  componentDidMount() {
+    this.r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.r);
+    this.seen = !!window.TBH; if (window.TBH) { if (!this.rendered) this.forceUpdate(); } else this.t = setInterval(() => { if (window.TBH) { clearInterval(this.t); this.forceUpdate(); } }, 50);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.r); clearInterval(this.t); cancelAnimationFrame(this.raf); }
+  scrollerRef = (el) => { this.el = el; };
+  reduce() { return window.TBH ? window.TBH.reduce() : false; }
+  scrollBy(d) {
+    const el = this.el; if (!el) return;
+    const first = el.querySelector('[style*="scroll-snap-align"]');
+    const step = (first ? first.getBoundingClientRect().width : 296) + 20;
+    el.scrollBy({ left: d * step, behavior: this.reduce() ? 'auto' : 'smooth' });
+  }
+  // Mouse drag with momentum; touch uses native swipe momentum
+  dragStart = (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !this.el) return;
+    cancelAnimationFrame(this.raf);
+    this.drag = { x: e.clientX, left: this.el.scrollLeft, lx: e.clientX, lt: performance.now(), v: 0, moved: false, id: e.pointerId };
+  };
+  dragMove = (e) => {
+    const d = this.drag; if (!d) return;
+    const dx = e.clientX - d.x;
+    if (!d.moved && Math.abs(dx) > 5) { d.moved = true; this.el.style.scrollSnapType = 'none'; this.el.style.cursor = 'grabbing'; try { this.el.setPointerCapture(d.id); } catch (er) {} }
+    if (!d.moved) return;
+    this.el.scrollLeft = d.left - dx;
+    const now = performance.now(), dt = Math.max(1, now - d.lt);
+    d.v = 0.8 * ((d.lx - e.clientX) / dt) + 0.2 * d.v; d.lx = e.clientX; d.lt = now;
+  };
+  dragEnd = () => {
+    const d = this.drag; if (!d) return; this.drag = null;
+    const el = this.el; el.style.cursor = 'grab'; this.justDragged = d.moved;
+    const done = () => { el.style.scrollSnapType = 'x mandatory'; };
+    let v = d.v * 16;
+    if (!d.moved || this.reduce() || Math.abs(v) < 0.5) return done();
+    const step = () => { el.scrollLeft += v; v *= 0.94; if (Math.abs(v) > 0.4) this.raf = requestAnimationFrame(step); else done(); };
+    this.raf = requestAnimationFrame(step);
+  };
+  dragClick = (e) => { if (this.justDragged) { e.preventDefault(); e.stopPropagation(); this.justDragged = false; } };
+  renderVals() {
+    const H = window.TBH; this.rendered = !!H; if (!H) return {};
+    const mobile = H.bp(this.state.w) === 'm';
+    const loading = !!this.props.loading;
+    return {
+      loading, ready: !loading, notMobile: !mobile, noop: H.noop, sk4: [1, 2, 3, 4],
+      col: mobile ? '78%' : 'minmax(260px, 296px)',
+      startups: H.STARTUPS, cardProps: { style: { width: '100%' } },
+      scrollerRef: this.scrollerRef,
+      prev: () => this.scrollBy(-1), next: () => this.scrollBy(1),
+      dragStart: this.dragStart, dragMove: this.dragMove, dragEnd: this.dragEnd, dragClick: this.dragClick,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

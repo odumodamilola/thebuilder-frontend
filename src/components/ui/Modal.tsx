@@ -51,7 +51,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       {/* Overlay */}
       <div 
         ref={overlayRef}
-        className="absolute inset-0 bg-[#0B2046]/40 backdrop-blur-[6px] transition-opacity"
+        className="absolute inset-0 bg-[var(--overlay)] backdrop-blur-[6px] transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -64,20 +64,20 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
         aria-labelledby={title ? titleId : undefined}
         aria-label={title ? undefined : 'Dialog'}
         className={cn(
-          "relative w-full max-w-lg overflow-hidden rounded-[12px] bg-white p-6 shadow-[0_24px_64px_rgba(7,22,49,0.24)] transition-all",
+          "relative w-full max-w-lg overflow-hidden rounded-[12px] bg-[var(--surface-card)] p-6 shadow-[0_24px_64px_rgba(7,22,49,0.24)] transition-all",
           "animate-in fade-in zoom-in-95 duration-250",
           className
         )}
       >
         <div className="mb-4 flex items-center justify-between">
           {title && (
-            <h2 id={titleId} className="font-display text-[22px] font-bold leading-[30px] text-navy-900">
+            <h2 id={titleId} className="font-display text-[22px] font-bold leading-[30px] text-[var(--text-heading)]">
               {title}
             </h2>
           )}
           <button
             onClick={onClose}
-            className="ml-auto rounded-[8px] p-2 text-slate transition-colors hover:bg-navy-50 hover:text-navy-900 focus:outline-none focus:ring-2 focus:ring-royal focus:ring-offset-2"
+            className="ml-auto rounded-[8px] p-2 text-[var(--text-meta)] transition-colors hover:bg-[var(--surface-tint)] hover:text-[var(--text-heading)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2"
             aria-label="Close modal"
           >
             <X className="h-5 w-5" />

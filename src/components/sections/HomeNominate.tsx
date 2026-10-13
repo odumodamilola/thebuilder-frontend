@@ -12,7 +12,7 @@ export default function HomeNominate() {
           <h2 className="mb-6 font-display text-[40px] font-extrabold uppercase leading-[44px] tracking-[-.02em] md:text-[72px] md:leading-[76px]">
             KNOW A BUILDER WE SHOULD FEATURE.
           </h2>
-          <p className="mb-8 max-w-2xl font-serif text-xl text-[var(--text-on-inverse)]/80">
+          <p className="mb-8 max-w-2xl font-serif text-xl text-[color:color-mix(in_srgb,var(--text-on-inverse)_80%,transparent)]">
             Founders, professionals and community leaders doing remarkable work, at home or abroad. Tell us who. Our editors read every nomination.
           </p>
           <Link href="/nominate" className="inline-flex min-h-12 items-center rounded-control bg-[var(--accent)] px-6 font-semibold text-[var(--text-on-inverse)] hover:bg-[var(--accent-hover)]">Nominate a Builder →</Link>

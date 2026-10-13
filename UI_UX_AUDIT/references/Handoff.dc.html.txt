@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script id="tb-theme-init">(function(){try{var p=localStorage.getItem('tb-theme')||'system';var d=p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>body{margin:0;background:var(--surface-card)} a{color:var(--text-heading)} a:hover{color:var(--text-heading)}</style>
+</helmet>
+<div data-screen-label="Hand-off" style="font-family:var(--font-ui);color:var(--text-body)">
+  <header style="background:var(--surface-inverse);color:#fff;padding:48px clamp(16px,4vw,48px) 0">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:12px">
+      <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Wordmark" inverse="{{ true }}" hint-size="160px,28px"></x-import>
+<x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.ThemeToggle" inverse="{{ true }}" hint-size="84px,24px"></x-import>
+      <h1 style="margin:8px 0 0;font-family:var(--font-display);font-weight:800;font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-0.02em;text-transform:uppercase">Prototype &amp; hand-off<span style="color:var(--text-accent)">.</span></h1>
+      <p style="margin:0;font-size:17px;line-height:26px;color:rgba(255,255,255,0.88);max-width:640px">Clickable flows, tokens named for Tailwind, the motion spec as Framer Motion props, and accessibility notes for every surface.</p>
+      <nav aria-label="Hand-off sections" style="display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:16px">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <button type="button" onClick="{{ t.go }}" aria-current="{{ t.cur }}" style="all:unset;cursor:pointer;flex-shrink:0;height:48px;padding:0 14px;font-size:14px;font-weight:{{ t.fw }};color:{{ t.fg }};box-shadow:{{ t.bar }}">{{ t.label }}</button>
+        </sc-for>
+      </nav>
+    </div>
+  </header>
+  <main ref="{{ mainRef }}" style="max-width:1200px;margin:0 auto;padding:40px clamp(16px,4vw,48px) 96px;display:flex;flex-direction:column;gap:32px">
+
+    <sc-if value="{{ s.flows }}" hint-placeholder-val="{{ true }}">
+      <p style="margin:0;font-size:15px;line-height:23px;color:var(--text-meta);max-width:720px">Each step opens the real screen in the right state. Shared-element transitions (card image → article hero, avatar → profile portrait, tab underline) are specified in the Motion tab.</p>
+      <sc-for list="{{ flows }}" as="f" hint-placeholder-count="4">
+        <section style="border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font:800 28px var(--font-display);color:var(--text-heading)">{{ f.n }}</span><h2 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--text-heading)">{{ f.title }}</h2><span style="font-size:13px;color:var(--text-meta)">{{ f.who }}</span></div>
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <sc-for list="{{ f.steps }}" as="st" hint-placeholder-count="5">
+              <li style="display:flex;align-items:center;gap:8px">
+                <a href="{{ st.href }}" target="_blank" style="display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);font-size:14px;font-weight:500;color:var(--text-heading);text-decoration:none;background:var(--surface-card)" style-hover="border-color:var(--border-emphasis);background:var(--surface-tint)"><span style="width:20px;height:20px;border-radius:50%;background:var(--surface-inverse);color:#fff;font:700 11px var(--font-ui);display:flex;align-items:center;justify-content:center">{{ st.i }}</span>{{ st.label }}</a>
+                <sc-if value="{{ st.arrow }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="color:var(--text-meta)">→</span></sc-if>
+              </li>
+            </sc-for>
+          </ol>
+        </section>
+      </sc-for>
+    </sc-if>
+
+    <sc-if value="{{ s.tokens }}" hint-placeholder-val="{{ false }}">
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <h2 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-heading)">Colour</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px">
+          <sc-for list="{{ colors }}" as="c" hint-placeholder-count="12">
+            <button type="button" onClick="{{ c.copy }}" title="Copy {{ c.tw }}" style="all:unset;cursor:pointer;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
+              <span style="height:64px;background:{{ c.hex }};border-bottom:1px solid var(--border)"></span>
+              <span style="padding:10px;display:flex;flex-direction:column;gap:2px"><code style="font:600 12px ui-monospace,Menlo,monospace;color:var(--text-heading)">{{ c.tw }}</code><span style="font-size:12px;color:var(--text-meta)">{{ c.hex }} · {{ c.use }}</span></span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <h2 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-heading)">Type scale <span style="font-size:14px;font-weight:500;color:var(--text-meta)">desktop / mobile</span></h2>
+        <sc-for list="{{ type }}" as="t" hint-placeholder-count="7">
+          <div style="display:grid;grid-template-columns:{{ typeCols }};gap:16px;align-items:baseline;padding:12px 0;border-top:1px solid var(--border)">
+            <code style="font:600 12px ui-monospace,Menlo,monospace;color:var(--text-heading)">{{ t.tw }}</code>
+            <span style="font-family:{{ t.ff }};font-weight:{{ t.fw }};font-size:{{ t.fs }};line-height:1.2;letter-spacing:{{ t.ls }};text-transform:{{ t.tt }};color:{{ t.fg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.sample }}</span>
+            <span style="font-size:12px;color:var(--text-meta);white-space:nowrap">{{ t.spec }}</span>
+          </div>
+        </sc-for>
+      </section>
+      <section style="display:grid;grid-template-columns:{{ twoCols }};gap:24px">
+        <div style="display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-heading)">Spacing (8px base)</h2>
+          <sc-for list="{{ space }}" as="sp" hint-placeholder-count="8"><div style="display:flex;align-items:center;gap:12px;font-size:12px"><code style="width:90px;font:600 12px ui-monospace,Menlo,monospace">{{ sp.tw }}</code><span style="height:12px;width:{{ sp.px }};background:var(--surface-inverse);border-radius:2px"></span><span style="color:var(--text-meta)">{{ sp.px }}</span></div></sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-heading)">Radius &amp; shadow</h2>
+          <sc-for list="{{ radius }}" as="r" hint-placeholder-count="7"><div style="display:flex;align-items:center;gap:12px;font-size:12px;padding:6px 0"><span style="width:44px;height:32px;background:var(--surface-tint);border:1px solid var(--border);border-radius:{{ r.v }};box-shadow:{{ r.sh }}"></span><code style="font:600 12px ui-monospace,Menlo,monospace;color:var(--text-heading)">{{ r.tw }}</code><span style="color:var(--text-meta)">{{ r.note }}</span></div></sc-for>
+        </div>
+      </section>
+      <section style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-heading)">tailwind.config.js</h2>
+        <pre style="margin:0;padding:20px;background:var(--surface-inverse-deep);color:#E6EAF2;border-radius:12px;overflow-x:auto;font:13px/21px ui-monospace,Menlo,monospace">{{ config }}</pre>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ s.motion }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:0;font-size:15px;line-height:23px;color:var(--text-meta);max-width:720px">Easing <code>[0.22, 1, 0.36, 1]</code> unless noted; exit <code>[0.4, 0, 1, 1]</code>. Nothing longer than 800ms. With <code>prefers-reduced-motion</code> every movement becomes an opacity fade and nothing loops.</p>
+      <div style="border:1px solid var(--border);border-radius:12px;overflow-x:auto">
+        <table style="width:100%;min-width:980px;border-collapse:collapse;font-size:13px">
+          <thead><tr style="text-align:left;background:var(--surface-hover);color:var(--text-meta)"><sc-for list="{{ mHeads }}" as="h" hint-placeholder-count="6"><th scope="col" style="padding:10px 12px;font-size:12px;font-weight:600">{{ h }}</th></sc-for></tr></thead>
+          <tbody>
+            <sc-for list="{{ motion }}" as="m" hint-placeholder-count="16">
+              <tr style="border-top:1px solid var(--border);vertical-align:top">
+                <th scope="row" style="padding:10px 12px;text-align:left;font-weight:600;color:var(--text-heading)">{{ m.name }}</th>
+                <td style="padding:10px 12px;color:var(--text-body)">{{ m.trigger }}</td>
+                <td style="padding:10px 12px;color:var(--text-body)">{{ m.prop }}</td>
+                <td style="padding:10px 12px;white-space:nowrap">{{ m.dur }}</td>
+                <td style="padding:10px 12px"><code style="font:12px/18px ui-monospace,Menlo,monospace;color:var(--text-heading);white-space:pre-wrap">{{ m.fm }}</code></td>
+                <td style="padding:10px 12px;color:var(--text-meta)">{{ m.rm }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s.a11y }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:{{ twoCols }};gap:16px">
+        <sc-for list="{{ a11y }}" as="a" hint-placeholder-count="8">
+          <section style="border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+            <h2 style="margin:0;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--text-heading)"><x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Icon" name="{{ a.icon }}" size="{{ 18 }}" hint-size="18px,18px"></x-import>{{ a.title }}</h2>
+            <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:21px">
+              <sc-for list="{{ a.items }}" as="i" hint-placeholder-count="4"><li>{{ i }}</li></sc-for>
+            </ul>
+          </section>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ s.components }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:0;font-size:15px;line-height:23px;color:var(--text-meta);max-width:720px">Every screen is composed from the design-system components below. Each has a specimen card with all variants and states in the design-system project.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">
+        <sc-for list="{{ comps }}" as="c" hint-placeholder-count="6">
+          <section style="border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px">
+            <h2 style="margin:0;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-error)">{{ c.group }}</h2>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px">
+              <sc-for list="{{ c.items }}" as="i" hint-placeholder-count="5"><li style="display:flex;flex-direction:column;gap:1px"><code style="font:600 13px ui-monospace,Menlo,monospace;color:var(--text-heading)">{{ i.n }}</code><span style="font-size:12px;color:var(--text-meta)">{{ i.v }}</span></li></sc-for>
+            </ul>
+          </section>
+        </sc-for>
+      </div>
+      <h2 style="margin:8px 0 0;font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--text-heading)">Breakpoints &amp; redlines</h2>
+      <div style="display:grid;grid-template-columns:{{ threeCols }};gap:12px">
+        <sc-for list="{{ bps }}" as="b" hint-placeholder-count="3">
+          <section style="border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;font-size:13px"><strong style="font:800 22px var(--font-display);color:var(--text-heading)">{{ b.w }}</strong><sc-for list="{{ b.rules }}" as="r" hint-placeholder-count="5"><span>{{ r }}</span></sc-for></section>
+        </sc-for>
+      </div>
+    </sc-if>
+  </main>
+</div>
+<x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Toast" open="{{ toastOpen }}" message="{{ toastMsg }}" on-close="{{ closeToast }}" hint-size="0px,0px"></x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TABS = [['flows', 'Prototype flows'], ['tokens', 'Tokens'], ['motion', 'Motion spec'], ['a11y', 'Accessibility'], ['components', 'Components & redlines']];
+const FLOWS = [
+  ['Visitor', 'Discover a Builder and nominate someone', [['Home', 'Home.dc.html'], ['Article', 'Article.dc.html'], ['Builder profile', 'BuilderProfile.dc.html'], ['Nominate', 'Nominate.dc.html'], ['Success', 'Nominate.dc.html?state=success']]],
+  ['Reader', 'Create an account and save a story', [['Register', 'Auth.dc.html?state=register'], ['Verify email', 'Auth.dc.html?state=verify'], ['Onboarding', 'Onboarding.dc.html'], ['Save a story', 'Stories.dc.html'], ['Saved', 'Account.dc.html?state=saved']]],
+  ['Editor-in-Chief', 'Approve, schedule and pin a lead story', [['Login + MFA', 'Auth.dc.html?state=mfa'], ['Dashboard', 'Console.dc.html?state=dashboard'], ['New story', 'Console.dc.html?state=editor'], ['Approve', 'Console.dc.html?state=editor'], ['Schedule', 'Console.dc.html?state=editor'], ['Homepage manager', 'Console.dc.html?state=homepage']]],
+  ['Search', 'Find and filter', [['⌘K palette', 'Search.dc.html?state=palette'], ['Suggestion', 'Search.dc.html?state=palette'], ['Results', 'Search.dc.html'], ['Filter', 'Search.dc.html?q=fintech%20Lagos']]],
+];
+const COLORS = [['navy-900', '#0B2046', 'Brand, headings, primary'], ['navy-950', '#071631', 'Footer, console sidebar'], ['navy-700', '#13306A', 'Navy hover'], ['navy-50', '#EEF1F7', 'Tinted panels, skeletons'], ['brand-red', '#D8121B', 'CTAs, kickers, full stop'], ['red-700', '#B30F16', 'Red hover, error text'], ['red-50', '#FCEBEC', 'Diff removed'], ['royal', '#1E3F8F', 'Circles, focus ring'], ['blush', '#F3D9DC', 'Highlight word on navy'], ['ink', '#0F172A', 'Body text'], ['slate', '#5B6478', 'Meta text'], ['slate-300', '#A3ACBF', 'Meta on navy'], ['line', '#E3E7EF', 'Borders'], ['console-bg', '#F7F8FB', 'Console canvas']];
+const MOTION = [
+  ['Hero headline', 'Page load', 'y 100% → 0 per word, mask', '600ms · 70ms stagger', 'initial={{ y: "100%" }} animate={{ y: 0 }}\ntransition={{ duration: 0.6, delay: i * 0.07, ease }}', 'Opacity fade, no stagger'],
+  ['Red full stop', 'After last word', 'scale 0 → 1.2 → 1', '300ms', 'animate={{ scale: [0, 1.2, 1] }}\ntransition={{ duration: 0.3 }}', 'Appears with headline'],
+  ['Scroll reveal', '15% in view, once', 'opacity 0 → 1, y 16 → 0', '500ms · 60ms stagger', 'whileInView={{ opacity: 1, y: 0 }}\nviewport={{ once: true, amount: 0.15 }}', 'Opacity only'],
+  ['Image settle', 'Image loaded', 'opacity 0 → 1, scale 1.04 → 1', '500ms', 'initial={{ opacity: 0, scale: 1.04 }}\nanimate={{ opacity: 1, scale: 1 }}', 'Opacity only'],
+  ['Card image zoom', 'Hover', 'scale 1 → 1.03', '400ms', 'whileHover={{ scale: 1.03 }}', 'None'],
+  ['Link underline', 'Hover / focus', 'scaleX 0 → 1, origin left', '250ms', 'whileHover={{ scaleX: 1 }} style={{ originX: 0 }}', 'Instant underline'],
+  ['Button', 'Hover / press', 'y −1px, darken; press scale 0.98', '150ms', 'whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}', 'Colour change only'],
+  ['Tab underline', 'Tab change', 'Shared layout', 'spring 320/30', '<motion.span layoutId="tab-underline" />', 'Jump, no slide'],
+  ['Mega menu', 'Open', 'opacity 0 → 1, y −8 → 0', '250ms', 'initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}', 'Opacity only'],
+  ['Mobile nav sheet', 'Open', 'x 100% → 0, items stagger', 'spring 260/32', 'transition={{ type: "spring", stiffness: 260, damping: 32 }}', 'Opacity only'],
+  ['Command palette', 'Open', 'scale 0.98 → 1, fade; height animates', '200ms', 'initial={{ opacity: 0, scale: 0.98 }} layout', 'Opacity only'],
+  ['Card → article hero', 'Navigate', 'Shared element', '400ms', '<motion.img layoutId={`story-${id}`} />', 'Crossfade'],
+  ['Bookmark', 'Toggle', 'Fill + scale, red burst', '250ms spring', 'animate={{ scale: [1, 1.25, 1] }}', 'Fill only'],
+  ['Drawn check', 'Success', 'pathLength 0 → 1', '600ms', 'initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}', 'Shown complete'],
+  ['OTP shake', 'Wrong code', 'x 0, −6, 6, −6, 6, 0', '200ms', 'animate={{ x: [0, -6, 6, -6, 6, 0] }}', 'Red border only'],
+  ['Page transition', 'Route change', 'Content fade + 2px red progress bar', '200ms', '<AnimatePresence mode="wait">', 'Fade only'],
+  ['Count-up numbers', 'First view', 'Tween 0 → value', '600ms', 'animate(count, value, { duration: 0.6 })', 'Final value shown'],
+  ['Console motion', 'All console UI', 'Same props, shorter', '150–250ms', 'No decorative motion; no scroll reveals', '—'],
+];
+const A11Y = [
+  ['Landmarks', 'layout', ['Skip link → #main on every page', 'header (banner), nav (labelled), main, aside (labelled rails), footer (contentinfo)', 'One h1 per page; sections use h2 in reading order']],
+  ['Focus order', 'arrow-right-left', ['Follows visual reading order; sticky share bar comes after the article header', 'Modals and drawers trap focus and return it to the trigger on close', 'Visible 2px royal ring with 2px offset, never removed']],
+  ['Alt text', 'image', ['Required in the CMS before an image can be published', 'Portraits: “Portrait of [Name]”; decorative circles and dot grids are aria-hidden', 'Video posters describe the scene, not “thumbnail”']],
+  ['Colour & contrast', 'contrast', ['Never red text on navy (3.0:1); dark-ground kickers are white with a red marker', 'Errors use red-700 plus an icon and text, never colour alone', 'Status pills always carry a word']],
+  ['Forms', 'text-cursor-input', ['Every input has a visible label; errors are linked with aria-describedby', 'Validation on blur, summary on submit', 'Password show/hide is a button with aria-pressed']],
+  ['ARIA patterns', 'braces', ['Tabs: role=tablist, arrow-key navigation', 'Search: combobox + listbox with aria-activedescendant', 'Kanban and homepage sections: keyboard move with arrow keys, announced via live region']],
+  ['Motion', 'activity', ['prefers-reduced-motion swaps movement for opacity', 'No autoplay; carousels never advance on their own', 'Auth quote rotation pauses on hover and stops with reduced motion']],
+  ['Touch targets', 'pointer', ['44 × 44px minimum on public and reader screens', 'Console desktop actions are 32px with 8px spacing', 'Mobile article text never below 17px']],
+];
+class Component extends DCLogic {
+  state = { w: window.innerWidth, tab: 'flows', toastOpen: false, toastMsg: '' };
+  componentDidMount() { this.r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.r); }
+  componentWillUnmount() { window.removeEventListener('resize', this.r); }
+  mainRef = (el) => { this.main = el; };
+  toast = (m) => { this.setState({ toastOpen: false }); setTimeout(() => this.setState({ toastMsg: m, toastOpen: true }), 30); };
+  renderVals() {
+    const s = this.state, w = s.w, mobile = w < 768;
+    const sv = {}; TABS.forEach(([k]) => { sv[k] = s.tab === k; });
+    return {
+      tabs: TABS.map(([k, label]) => ({ label, cur: s.tab === k ? 'page' : undefined, fw: s.tab === k ? '600' : '500', fg: s.tab === k ? '#fff' : 'var(--slate-300)', bar: s.tab === k ? 'inset 0 -3px 0 var(--brand-red)' : 'none',
+        go: () => this.setState({ tab: k }, () => this.main && this.main.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 })) })),
+      s: sv, mainRef: this.mainRef,
+      flows: FLOWS.map(([who, title, steps], i) => ({ n: String(i + 1).padStart(2, '0'), who, title, steps: steps.map(([label, href], j) => ({ label, href, i: j + 1, arrow: j < steps.length - 1 })) })),
+      colors: COLORS.map(([tw, hex, use]) => ({ tw, hex, use, copy: () => { try { navigator.clipboard.writeText(tw); } catch (e) {} this.toast('Copied ' + tw); } })),
+      typeCols: mobile ? '1fr' : '160px minmax(0,1fr) 150px',
+      type: [['text-display', 'var(--font-display)', 800, '72px', '-0.02em', 'uppercase', 'var(--navy-900)', 'Builders beyond borders', '72/76 · 40/44'], ['text-h1', 'var(--font-display)', 700, '48px', '-0.015em', 'none', 'var(--navy-900)', 'Selling More Than Food', '48/56 · 32/38'], ['text-h2', 'var(--font-display)', 700, '32px', '-0.01em', 'none', 'var(--navy-900)', 'Lending to people banks never saw', '32/40 · 24/30'], ['text-h3', 'var(--font-display)', 700, '22px', '0', 'none', 'var(--navy-900)', 'Inside the quiet rise', '22/30 · 19/26'], ['text-article', 'var(--font-serif)', 400, '19px', '0', 'none', 'var(--ink)', 'At 6am, before the shutters lift on Balogun Market…', '19/32 · 17/28'], ['text-body', 'var(--font-ui)', 400, '17px', '0', 'none', 'var(--ink)', 'Founders, professionals and community leaders', '17/28'], ['text-meta', 'var(--font-ui)', 400, '13px', '0', 'none', 'var(--slate)', 'Adaeze Nwosu · 6 Oct 2026 · 9 min read', '13/18'], ['text-kicker', 'var(--font-ui)', 600, '12px', '0.08em', 'uppercase', 'var(--red-700)', 'Cover story', '12/16 +8%']]
+        .map(([tw, ff, fw, fs, ls, tt, fg, sample, spec]) => ({ tw, ff, fw, fs: mobile ? Math.min(parseInt(fs), 32) + 'px' : fs, ls, tt, fg, sample, spec })),
+      twoCols: mobile ? '1fr' : '1fr 1fr', threeCols: mobile ? '1fr' : 'repeat(3, minmax(0,1fr))',
+      space: [1, 2, 3, 4, 6, 8, 12, 24].map((n) => ({ tw: 'p-' + n, px: n * 4 + 'px' })).concat([{ tw: 'section-y', px: '96px' }]),
+      radius: [['rounded-sm', '4px', 'none', 'Ads, small tags'], ['rounded-md', '8px', 'none', 'Inputs, buttons'], ['rounded-lg', '12px', 'none', 'Cards'], ['rounded-full', '999px', 'none', 'Chips, avatars'], ['shadow-hover', '12px', '0 8px 24px rgba(11,32,70,0.08)', 'Card hover'], ['shadow-drag', '12px', '0 16px 40px rgba(7,22,49,0.18)', 'Dragging'], ['shadow-overlay', '12px', '0 24px 64px rgba(7,22,49,0.24)', 'Modals, drawers']].map(([tw, v, sh, note]) => ({ tw, v, sh, note })),
+      config: 'module.exports = {\n  theme: {\n    extend: {\n      colors: {\n' + COLORS.map(([tw, hex]) => "        '" + tw + "': '" + hex + "',").join('\n') + "\n      },\n      fontFamily: {\n        display: ['Montserrat', 'sans-serif'],\n        sans: ['Inter', 'sans-serif'],\n        serif: ['\"Source Serif 4\"', 'serif'],\n      },\n      borderRadius: { sm: '4px', md: '8px', lg: '12px' },\n      maxWidth: { content: '1280px', article: '680px' },\n      transitionTimingFunction: { standard: 'cubic-bezier(0.22,1,0.36,1)', exit: 'cubic-bezier(0.4,0,1,1)' },\n      transitionDuration: { micro: '150ms', small: '250ms', medium: '400ms', large: '700ms' },\n    },\n  },\n};",
+      mHeads: ['Animation', 'Trigger', 'Property', 'Duration', 'Framer Motion', 'Reduced motion'],
+      motion: MOTION.map(([name, trigger, prop, dur, fm, rm]) => ({ name, trigger, prop, dur, fm, rm })),
+      a11y: A11Y.map(([title, icon, items]) => ({ title, icon, items })),
+      comps: [['Core', [['Button', 'primary · accent · secondary · ghost · danger · inverse · loading'], ['IconButton', 'ghost · outline · active'], ['Badge', 'classification · stage · new · count · soon · award'], ['StatusPill', '7 workflow + 3 user states'], ['Chip', 'filter · inverse · count'], ['Skeleton', 'lines · aspect · inverse']]], ['Forms', [['Input', 'sm · md · lg · error · password · inverse'], ['Textarea', 'counter'], ['Select', 'sm · md'], ['Checkbox · Switch', 'checked · disabled · error'], ['SegmentedControl', 'sm · md']]], ['Navigation', [['UtilityBar', 'Nigeria · Australia'], ['Header', 'default · compact · signed in · mobile'], ['Footer', 'desktop · mobile'], ['Tabs', 'counts · scroll'], ['Breadcrumb', 'light · inverse']]], ['Cards', [['StoryCard', 'vertical · horizontal · compact · lead · sponsored'], ['BuilderCard', 'duotone · badge'], ['StartupCard', 'logo · monogram'], ['OpportunityRow + DeadlineChip', 'open · <7 days · closed'], ['AdSlot', 'mpu · leaderboard']]], ['Feedback', [['Dialog', 'modal · sheet'], ['Toast', 'default · action · error'], ['Tooltip', 'top · bottom']]], ['Brand', [['Wordmark', 'light · inverse'], ['PosterBand', 'circles left/right/both'], ['CircuitLine', 'draw on scroll'], ['NewsletterForm', 'default · loading · success · error']]]]
+        .map(([group, items]) => ({ group, items: items.map(([n, v]) => ({ n, v })) })),
+      bps: [['1440', ['12 columns · 1280 max · 24 gutter', 'Section rhythm 96px', 'Header 72 → 60px after 80px scroll', 'Article: 760 header · 1040 media · 680 body', 'Sticky rails 300px']], ['834', ['8 columns · 24 margins', 'Section rhythm 72px', 'Hamburger nav (under 1180px)', 'Rails move below content', 'Console sidebar becomes a drawer']], ['390', ['4 columns · 16 margins', 'Section rhythm 56px', 'Lead story headline above the fold', 'Filters move to bottom sheets', 'Touch targets ≥ 44px']]].map(([wd, rules]) => ({ w: wd, rules })),
+      toastOpen: s.toastOpen, toastMsg: s.toastMsg, closeToast: () => this.setState({ toastOpen: false }),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

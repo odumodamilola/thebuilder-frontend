@@ -105,7 +105,7 @@ const StoryCard = React.memo(function StoryCard({
           <PlaceholderImage />
         )}
         {sponsored && (
-          <div className="absolute top-2 right-2 bg-[var(--surface-card)]/90 backdrop-blur text-xs font-semibold px-2 py-1 rounded text-[var(--text-heading)] shadow">
+          <div className="absolute top-2 right-2 bg-[color:color-mix(in_srgb,var(--surface-card)_90%,transparent)] backdrop-blur text-xs font-semibold px-2 py-1 rounded text-[var(--text-heading)] shadow">
             Sponsored
           </div>
         )}

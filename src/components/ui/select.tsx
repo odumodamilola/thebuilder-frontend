@@ -13,17 +13,17 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="flex flex-col gap-2 w-full">
         {label && (
-          <label className="font-ui font-semibold text-sm text-navy-900">
+          <label className="font-ui font-semibold text-sm text-[var(--text-heading)]">
             {label}
           </label>
         )}
         <select
           ref={ref}
           className={cn(
-            "h-11 px-4 rounded-lg bg-white border border-line text-ink font-ui text-base transition-colors appearance-none",
-            "focus:outline-none focus:border-navy-900 focus:ring-1 focus:ring-navy-900",
-            "disabled:bg-slate-50 disabled:text-slate-400",
-            error && "border-brand-red focus:border-brand-red focus:ring-brand-red",
+            "h-11 px-4 rounded-lg bg-[var(--surface-card)] border border-[var(--border)] text-[var(--text-body)] font-ui text-base transition-colors appearance-none",
+            "focus:outline-none focus:border-[var(--border-emphasis)] focus:ring-1 focus:ring-[var(--focus-ring)]",
+            "disabled:bg-[var(--surface-hover)] disabled:text-[var(--text-meta)]",
+            error && "border-[var(--accent)] focus:border-[var(--accent)] focus:ring-[var(--focus-ring)]",
             className
           )}
           {...props}
@@ -33,7 +33,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        {error && <span className="text-sm font-ui text-brand-red">{error}</span>}
+        {error && <span className="text-sm font-ui text-[var(--text-accent)]">{error}</span>}
       </div>
     )
   }

@@ -9,9 +9,9 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export function Badge({ tone = 'neutral', icon, className, children, ...props }: BadgeProps) {
   const toneClasses: Record<string, string> = {
-    award: 'bg-red-50 text-brand-red border border-brand-red/20',
-    classification: 'bg-navy-50 text-navy-900 border border-line',
-    neutral: 'bg-slate-100 text-slate border border-line',
+    award: 'bg-[var(--surface-accent-soft)] text-[var(--text-accent)] border border-[color:color-mix(in_srgb,var(--accent)_20%,transparent)]',
+    classification: 'bg-[var(--surface-tint)] text-[var(--text-heading)] border border-[var(--border)]',
+    neutral: 'bg-[var(--surface-skeleton)] text-[var(--text-meta)] border border-[var(--border)]',
   };
 
   const selectedTone = toneClasses[tone] || toneClasses.neutral;

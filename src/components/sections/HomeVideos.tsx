@@ -31,13 +31,13 @@ export default function HomeVideos() {
             <div className="w-full aspect-video bg-[var(--surface-inverse)] rounded-[12px] overflow-hidden relative">
               <div className="absolute top-0 right-0 w-[80%] h-[150%] bg-[var(--decoration-royal)] rounded-bl-full opacity-50 translate-x-[10%] -translate-y-[20%]" />
               <div className="absolute inset-0 tb-dots opacity-20" />
-              <div className="absolute inset-0 bg-[var(--surface-inverse-deep)]/20 group-hover:bg-[var(--surface-inverse-deep)]/45 transition-colors duration-250 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[color:color-mix(in_srgb,var(--surface-inverse-deep)_20%,transparent)] group-hover:bg-[color:color-mix(in_srgb,var(--surface-inverse-deep)_45%,transparent)] transition-colors duration-250 flex items-center justify-center">
                 <div className="w-[64px] h-[64px] md:w-[80px] md:h-[80px] bg-[var(--accent)] rounded-full flex items-center justify-center text-[var(--text-on-inverse)] transition-transform duration-250 group-hover:scale-110 relative">
                   <div className="absolute inset-0 rounded-full border-2 border-[var(--accent)] opacity-0 group-hover:opacity-100 group-hover:animate-[tb-ring_1.2s_ease-out_infinite]" />
                   <div className="w-0 h-0 border-y-[10px] md:border-y-[13px] border-y-transparent border-l-[17px] md:border-l-[21px] border-l-[var(--text-on-inverse)] ml-[4px]"></div>
                 </div>
               </div>
-              <div className="absolute bottom-[12px] right-[12px] bg-[var(--surface-inverse-deep)]/80 px-2 py-0.5 rounded text-[11px] font-semibold backdrop-blur-sm text-[var(--text-on-inverse)]">
+              <div className="absolute bottom-[12px] right-[12px] bg-[color:color-mix(in_srgb,var(--surface-inverse-deep)_80%,transparent)] px-2 py-0.5 rounded text-[11px] font-semibold backdrop-blur-sm text-[var(--text-on-inverse)]">
                 {mainVideo.duration}
               </div>
             </div>
@@ -48,19 +48,19 @@ export default function HomeVideos() {
           </Link>
 
           {/* Side Videos */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-[20px] content-start">
+          <div className="flex flex-col gap-4">
             {sideVideos.map((vid, i) => (
               <Link key={i} href="/videos" aria-label={`Watch ${vid.title}`} className="group text-left grid grid-cols-[136px_1fr] md:grid-cols-1 lg:grid-cols-[168px_1fr] gap-[16px] items-start min-w-0 rounded-[10px]">
                 <div className="w-full aspect-video bg-[var(--surface-inverse)] rounded-[10px] overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-[80%] h-[150%] bg-[var(--decoration-royal)] rounded-bl-full opacity-50 translate-x-[10%] -translate-y-[20%]" />
                   <div className="absolute inset-0 tb-dots opacity-20" />
-                  <div className="absolute inset-0 bg-[var(--surface-inverse-deep)]/20 group-hover:bg-[var(--surface-inverse-deep)]/45 transition-colors duration-250 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-[color:color-mix(in_srgb,var(--surface-inverse-deep)_20%,transparent)] group-hover:bg-[color:color-mix(in_srgb,var(--surface-inverse-deep)_45%,transparent)] transition-colors duration-250 flex items-center justify-center">
                     <div className="w-[44px] h-[44px] bg-[var(--accent)] rounded-full flex items-center justify-center text-[var(--text-on-inverse)] transition-transform duration-250 group-hover:scale-110 relative">
                       <div className="absolute inset-0 rounded-full border-2 border-[var(--accent)] opacity-0 group-hover:opacity-100 group-hover:animate-[tb-ring_1.2s_ease-out_infinite]" />
                       <div className="w-0 h-0 border-y-[7px] border-y-transparent border-l-[11px] border-l-[var(--text-on-inverse)] ml-[3px]"></div>
                     </div>
                   </div>
-                  <div className="absolute bottom-[8px] right-[8px] bg-[var(--surface-inverse-deep)]/80 px-1.5 py-0.5 rounded text-[10px] font-semibold backdrop-blur-sm text-[var(--text-on-inverse)]">
+                  <div className="absolute bottom-[8px] right-[8px] bg-[color:color-mix(in_srgb,var(--surface-inverse-deep)_80%,transparent)] px-1.5 py-0.5 rounded text-[10px] font-semibold backdrop-blur-sm text-[var(--text-on-inverse)]">
                     {vid.duration}
                   </div>
                 </div>

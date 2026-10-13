@@ -31,12 +31,12 @@ export function NewsletterForm({ state = 'idle', inverse = false, compact = fals
 
   if (formState === 'success') {
     return (
-      <div className="flex items-center gap-3 p-4 rounded-xl border border-line bg-white">
-        <div className="w-8 h-8 rounded-full bg-brand-red text-white flex items-center justify-center shrink-0">
+      <div className="flex items-center gap-3 p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-card)]">
+        <div className="w-8 h-8 rounded-full bg-[var(--accent)] text-[var(--text-on-inverse)] flex items-center justify-center shrink-0">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <div className="flex flex-col">
-          <p role="status" className="font-display font-bold text-[15px] text-navy-900 m-0">Check your inbox to confirm your subscription.</p>
+          <p role="status" className="font-display font-bold text-[15px] text-[var(--text-heading)] m-0">Check your inbox to confirm your subscription.</p>
         </div>
       </div>
     );
@@ -50,8 +50,8 @@ export function NewsletterForm({ state = 'idle', inverse = false, compact = fals
           required
           placeholder="Your email address"
           className={`w-full h-14 pl-4 pr-[120px] rounded-lg border ${
-            inverse ? 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white focus:ring-white' 
-            : 'bg-white border-line text-ink focus:border-royal focus:ring-royal'
+            inverse ? 'bg-[color:color-mix(in_srgb,var(--text-on-inverse)_10%,transparent)] border-[color:color-mix(in_srgb,var(--text-on-inverse)_20%,transparent)] text-[var(--text-on-inverse)] placeholder-[color:color-mix(in_srgb,var(--text-on-inverse)_50%,transparent)] focus:border-[var(--text-on-inverse)] focus:ring-[var(--text-on-inverse)]'
+            : 'bg-[var(--surface-card)] border-[var(--border)] text-[var(--text-body)] focus:border-[var(--focus-ring)] focus:ring-[var(--focus-ring)]'
           } text-[15px] focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all`}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -59,17 +59,17 @@ export function NewsletterForm({ state = 'idle', inverse = false, compact = fals
         <button
           type="submit"
           disabled={formState === 'loading'}
-          className="absolute right-1.5 top-1.5 bottom-1.5 px-6 rounded-[6px] font-medium text-[15px] bg-brand-red text-white hover:bg-red-700 transition-colors flex items-center justify-center min-w-[100px]"
+          className="absolute right-1.5 top-1.5 bottom-1.5 px-6 rounded-[6px] font-medium text-[15px] bg-[var(--accent)] text-[var(--text-on-inverse)] hover:bg-[var(--accent-hover)] transition-colors flex items-center justify-center min-w-[100px]"
         >
           {formState === 'loading' ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-[color:color-mix(in_srgb,var(--text-on-inverse)_30%,transparent)] border-t-[var(--text-on-inverse)] rounded-full animate-spin" />
           ) : (
             'Subscribe'
           )}
         </button>
       </div>
       {formState === 'error' && (
-        <p role="alert" className="text-sm text-brand-red mt-2 block">Something went wrong on our side. Try again.</p>
+        <p role="alert" className="text-sm text-[var(--text-accent)] mt-2 block">Something went wrong on our side. Try again.</p>
       )}
     </form>
   );

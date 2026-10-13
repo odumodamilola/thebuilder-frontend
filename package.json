@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint pages src",
     "type-check": "tsc --noEmit",
+    "check:theme": "node scripts/check-color-tokens.cjs && node scripts/check-public-theme.cjs",
     "lint:fix": "eslint pages src --fix"
   },
   "dependencies": {

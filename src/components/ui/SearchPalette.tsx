@@ -90,7 +90,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-[250] flex justify-center items-start pt-[12vh] bg-[#0B2046]/40 backdrop-blur-[6px] font-ui"
+      className="fixed inset-0 z-[250] flex justify-center items-start pt-[12vh] bg-[var(--overlay)] backdrop-blur-[6px] font-ui"
       onClick={onClose}
     >
       <div 
@@ -98,13 +98,13 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
         role="dialog" 
         aria-modal="true" 
         aria-label="Search"
-        className="mx-4 flex max-h-[76vh] w-[640px] max-w-[calc(100%-2rem)] flex-col overflow-hidden rounded-md bg-white shadow-overlay animate-in fade-in zoom-in-95 duration-200 sm:rounded-lg"
+        className="mx-4 flex max-h-[76vh] w-[640px] max-w-[calc(100%-2rem)] flex-col overflow-hidden rounded-md bg-[var(--surface-card)] shadow-overlay animate-in fade-in zoom-in-95 duration-200 sm:rounded-lg"
         onClick={e => e.stopPropagation()}
       >
         <div 
-          className="flex items-center gap-3 px-4 h-16 border-b border-line shrink-0"
+          className="flex items-center gap-3 px-4 h-16 border-b border-[var(--border)] shrink-0"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-navy-900">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-[var(--text-heading)]">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
@@ -119,13 +119,13 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
             value={query}
             onChange={e => { setQuery(e.target.value); setActiveIndex(-1); }}
             placeholder="Search stories, builders, startups…"
-            className="flex-1 min-w-0 border-0 outline-none text-[18px] text-ink bg-transparent"
+            className="flex-1 min-w-0 border-0 outline-none text-[18px] text-[var(--text-body)] bg-transparent"
           />
           <button 
             type="button" 
             onClick={onClose}
             aria-label="Close search"
-            className="h-7 px-2 border border-line rounded-[6px] bg-white text-[12px] font-medium text-slate hover:bg-slate-50 transition-colors"
+            className="h-7 px-2 border border-[var(--border)] rounded-[6px] bg-[var(--surface-card)] text-[12px] font-medium text-[var(--text-meta)] hover:bg-[var(--surface-hover)] transition-colors"
           >
             Esc
           </button>
@@ -136,10 +136,10 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
             {!hasQuery ? (
               <div className="p-3 flex flex-col gap-5">
                 <div className="flex flex-col gap-1">
-                  <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-slate mb-1.5">Recent</span>
+                  <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-[var(--text-meta)] mb-1.5">Recent</span>
                   {recent.map((r, i) => (
-                    <button key={i} onClick={() => setQuery(r)} className="flex items-center gap-2.5 min-h-[44px] text-[15px] text-ink rounded-md hover:bg-navy-50 px-3 transition-colors text-left">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-slate">
+                    <button key={i} onClick={() => setQuery(r)} className="flex items-center gap-2.5 min-h-[44px] text-[15px] text-[var(--text-body)] rounded-md hover:bg-[var(--surface-tint)] px-3 transition-colors text-left">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-[var(--text-meta)]">
                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
                         <path d="M3 3v5h5"></path>
                         <path d="M12 7v5l4 2"></path>
@@ -149,10 +149,10 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                   ))}
                 </div>
                 <div className="flex flex-col gap-2.5">
-                  <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-slate">Popular</span>
+                  <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-[var(--text-meta)]">Popular</span>
                   <div className="flex gap-2 flex-wrap">
                     {popular.map((p, i) => (
-                      <button key={i} onClick={() => setQuery(p)} className="px-3 py-1.5 rounded-full border border-line text-[14px] text-navy-900 hover:border-navy-900 transition-colors">
+                      <button key={i} onClick={() => setQuery(p)} className="px-3 py-1.5 rounded-full border border-[var(--border)] text-[14px] text-[var(--text-heading)] hover:border-[var(--border-emphasis)] transition-colors">
                         {p}
                       </button>
                     ))}
@@ -160,7 +160,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                 </div>
               </div>
             ) : mockResults.length === 0 ? (
-              <div className="p-8 text-center text-slate text-[15px]">
+              <div className="p-8 text-center text-[var(--text-meta)] text-[15px]">
                 No results for "{query}"
               </div>
             ) : (
@@ -171,7 +171,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                     return (
                       <React.Fragment key={res.id}>
                         {isFirstOfGroup && (
-                          <li role="presentation" className="text-[11px] font-semibold tracking-[0.08em] uppercase text-slate px-3 pt-3 pb-1.5">
+                          <li role="presentation" className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--text-meta)] px-3 pt-3 pb-1.5">
                             {res.type}
                           </li>
                         )}
@@ -183,7 +183,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                           onClick={() => { void router.push(res.href).then(onClose); }}
                           className={cn(
                             "flex items-center gap-3 min-h-[44px] px-3 rounded-md cursor-pointer text-[15px] transition-colors",
-                            activeIndex === i ? "bg-navy-50 text-navy-900 shadow-[inset_2px_0_0_#D8121B]" : "text-slate hover:bg-slate-50"
+                            activeIndex === i ? "bg-[var(--surface-tint)] text-[var(--text-heading)] shadow-[inset_2px_0_0_#D8121B]" : "text-[var(--text-meta)] hover:bg-[var(--surface-hover)]"
                           )}
                         >
                           <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -194,7 +194,7 @@ export function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                     );
                   })}
                 </ul>
-                <Link href={`/search?q=${encodeURIComponent(query)}`} className="flex items-center justify-between min-h-[44px] mt-1 px-3 border-t border-line text-[14px] font-semibold text-navy-900 hover:bg-slate-50 transition-colors" onClick={onClose}>
+                <Link href={`/search?q=${encodeURIComponent(query)}`} className="flex items-center justify-between min-h-[44px] mt-1 px-3 border-t border-[var(--border)] text-[14px] font-semibold text-[var(--text-heading)] hover:bg-[var(--surface-hover)] transition-colors" onClick={onClose}>
                   See all results for "{query}" <span>→</span>
                 </Link>
               </div>

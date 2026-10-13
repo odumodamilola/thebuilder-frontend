@@ -11,7 +11,7 @@ export function Icon({ name, ...props }: IconProps) {
   const LucideIcon = (LucideIcons as any)[pascalName];
   if (!LucideIcon) {
     console.warn(`Icon ${name} (${pascalName}) not found in lucide-react`);
-    return <div className="w-5 h-5 bg-slate-200 rounded" />;
+    return <div className="w-5 h-5 bg-[var(--surface-skeleton)] rounded" />;
   }
   return <LucideIcon {...props} />;
 }

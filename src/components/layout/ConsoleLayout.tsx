@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { Icon } from '@/components/ui/Icon';
-import { consoleData } from '@/data/console';
 
 const NAV = [
   { label: 'Dashboard', icon: 'layout-dashboard', href: '/console' },
@@ -28,14 +26,16 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   
   const expanded = !collapsed;
   
   return (
-    <div className={`grid min-h-screen bg-console-bg font-ui transition-[grid-template-columns] duration-200 ease-standard ${expanded ? 'grid-cols-[248px_minmax(0,1fr)]' : 'grid-cols-[72px_minmax(0,1fr)]'}`}>
+    <div className={`grid min-h-screen min-w-0 grid-cols-1 bg-console-bg font-ui transition-[grid-template-columns] duration-200 ease-standard ${expanded ? 'lg:grid-cols-[248px_minmax(0,1fr)]' : 'lg:grid-cols-[72px_minmax(0,1fr)]'}`}>
+      {mobileOpen && <button type="button" aria-label="Close navigation" className="fixed inset-0 z-30 bg-navy-950/40 lg:hidden" onClick={() => setMobileOpen(false)} />}
       
       {/* Sidebar */}
-      <aside className="bg-navy-950 text-slate-300 sticky top-0 h-screen flex flex-col overflow-hidden">
+      <aside className={`fixed inset-y-0 left-0 z-40 flex h-screen w-[248px] flex-col overflow-hidden bg-navy-950 text-slate-300 transition-transform lg:sticky lg:top-0 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-16 flex items-center justify-between px-3.5 border-b border-white/10">
           {expanded && (
             <span className="flex items-center gap-2">
@@ -43,14 +43,15 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
               <span className="text-[11px] font-semibold text-slate-300">Console</span>
             </span>
           )}
-          <button 
+          <button
             type="button" 
-            onClick={() => setCollapsed(!collapsed)} 
+            onClick={() => setCollapsed(!collapsed)}
             aria-label={expanded ? 'Collapse sidebar' : 'Expand sidebar'}
-            className="w-9 h-9 border-0 rounded-lg bg-transparent text-slate-300 cursor-pointer flex items-center justify-center hover:bg-white/10 transition-colors"
+            className="hidden h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent text-slate-300 transition-colors hover:bg-white/10 lg:flex"
           >
             <Icon name={(expanded ? 'panel-left-close' : 'panel-left-open') as any} className="w-[18px] h-[18px]" />
           </button>
+          <button type="button" onClick={() => setMobileOpen(false)} aria-label="Close navigation" className="grid h-9 w-9 place-items-center rounded-lg text-slate-300 hover:bg-white/10 lg:hidden"><Icon name="x" className="h-5 w-5" /></button>
         </div>
         
         <nav aria-label="Console" className="flex-1 overflow-y-auto p-2">
@@ -61,6 +62,7 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
               <Link 
                 key={n.label} 
                 href={n.href}
+                onClick={() => setMobileOpen(false)}
                 title={expanded ? undefined : n.label}
                 aria-current={isActive ? 'page' : undefined}
                 className={`flex items-center gap-3 h-10 px-3 rounded-lg mb-0.5 text-sm whitespace-nowrap no-underline transition-colors ${isActive ? 'font-semibold text-white bg-white/10 shadow-[inset_2px_0_0_var(--brand-red)]' : 'font-medium text-slate-300 bg-transparent hover:bg-white/5 hover:text-white'}`}
@@ -87,18 +89,19 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <div className="min-w-0 flex flex-col">
         {/* Header */}
-        <header className="sticky top-0 z-20 h-16 bg-white border-b border-line flex items-center gap-3 px-6">
-          <button type="button" className="flex-1 max-w-[420px] flex items-center gap-2 h-[38px] px-3 border border-line rounded-lg bg-white text-slate font-normal text-sm cursor-text text-left">
+        <header className="sticky top-0 z-20 flex h-16 min-w-0 items-center gap-2 border-b border-line bg-white px-3 sm:gap-3 sm:px-4 md:px-6">
+          <button type="button" onClick={() => setMobileOpen(true)} aria-label="Open navigation" aria-expanded={mobileOpen} className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-navy-900 hover:bg-navy-50 lg:hidden"><Icon name="menu" className="h-5 w-5" /></button>
+          <button type="button" className="hidden h-[38px] max-w-[420px] flex-1 items-center gap-2 rounded-lg border border-line bg-white px-3 text-left text-sm font-normal text-slate lg:flex">
             <Icon name="search" className="w-4 h-4" />
             <span className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">Search content, Builders, users…</span>
             <span className="text-[11px] border border-line rounded px-1.5 py-px">⌘K</span>
           </button>
           
-          <div className="ml-auto flex items-center gap-2.5">
+          <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-2.5">
             <div className="relative flex">
               <Link href="/console/editor" className="inline-flex items-center justify-center h-[36px] px-3 bg-navy-900 text-white text-sm font-medium rounded-l-lg hover:bg-navy-700 transition-colors">
                 <Icon name="plus" className="w-4 h-4 mr-2" />
-                New story
+                <span className="hidden sm:inline">New story</span>
               </Link>
               <button 
                 type="button" 
@@ -127,7 +130,7 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
               )}
             </div>
             
-            <select aria-label="Edition" className="h-[36px] border border-line rounded-lg px-2.5 font-semibold text-[13px] font-ui bg-white text-navy-900 outline-none cursor-pointer hover:bg-navy-50 transition-colors">
+            <select aria-label="Edition" className="hidden h-[36px] rounded-lg border border-line bg-white px-2.5 font-ui text-[13px] font-semibold text-navy-900 outline-none transition-colors hover:bg-navy-50 md:block">
               <option>🇳🇬 Nigeria</option>
               <option>🇦🇺 Australia</option>
             </select>
@@ -141,7 +144,7 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
               <span aria-hidden="true" className="w-[34px] h-[34px] rounded-full bg-navy-900 text-white flex items-center justify-center font-bold text-[13px] font-ui">
                 FO
               </span>
-              <div className="leading-[1.2]">
+              <div className="hidden leading-[1.2] md:block">
                 <div className="text-[13px] font-semibold text-navy-900">Folake Ojo</div>
                 <div className="text-[11px] text-slate">Editor-in-Chief</div>
               </div>
@@ -150,7 +153,7 @@ export function ConsoleLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 min-w-0">
+        <main className="min-w-0 flex-1 p-4 sm:p-5 md:p-6">
           {children}
         </main>
       </div>

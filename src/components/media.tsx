@@ -12,14 +12,14 @@ interface MediaProps {
 export function Media({ ratio = 1, radius = 0, label, alt, src, className = '' }: MediaProps) {
   return (
     <div 
-      className={`relative overflow-hidden bg-slate-100 flex items-center justify-center ${className}`}
+      className={`relative overflow-hidden bg-[var(--surface-skeleton)] flex items-center justify-center ${className}`}
       style={{ aspectRatio: ratio, borderRadius: radius }}
       aria-label={label}
     >
       {src ? (
         <img src={src} alt={alt || ''} className="w-full h-full object-cover" />
       ) : (
-        <span className="text-slate-400 font-ui text-sm">{alt || 'Media'}</span>
+        <span className="text-[var(--text-meta)] font-ui text-sm">{alt || 'Media'}</span>
       )}
     </div>
   );

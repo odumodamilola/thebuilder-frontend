@@ -15,16 +15,16 @@ export default function HomeTrending() {
         <div className="mb-8">
           <SectionTitle>Trending</SectionTitle>
         </div>
-        <ol className="flex flex-col md:flex-row gap-6 md:gap-8">
+        <ol className="grid gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-5">
           {trending.map((title, i) => (
-            <li key={i} className="flex-1 flex gap-4 group cursor-pointer tb-fadeup" style={{ animationDelay: `${(i+1)*100}ms` }}>
+            <li key={i} className="flex min-w-0 gap-4 group cursor-pointer tb-fadeup" style={{ animationDelay: `${(i+1)*100}ms` }}>
               <span 
-                className="font-display font-extrabold text-[48px] leading-[0.8] text-transparent"
+                className="shrink-0 font-display font-extrabold text-[48px] leading-[0.8] text-transparent"
                 style={{ WebkitTextStroke: '1px var(--text-meta)' }}
               >
                 {i + 1}
               </span>
-              <h4 className="font-display font-bold text-[var(--text-heading)] group-hover:text-[var(--text-accent)] transition-colors text-[15px] leading-snug">
+              <h4 className="min-w-0 font-display font-bold text-[var(--text-heading)] group-hover:text-[var(--text-accent)] transition-colors text-[15px] leading-snug">
                 {title}
               </h4>
             </li>

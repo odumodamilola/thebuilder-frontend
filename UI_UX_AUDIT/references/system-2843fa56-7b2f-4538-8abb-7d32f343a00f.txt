@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script id="tb-theme-init">(function(){try{var p=localStorage.getItem('tb-theme')||'system';var d=p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>body{margin:0;background:var(--surface-card)} a{color:var(--text-heading)} a:hover{color:var(--text-heading)}</style>
+</helmet>
+<a href="#main" class="tb-skip">Skip to content</a>
+<sc-if value="{{ chrome }}" hint-placeholder-val="{{ true }}">
+  <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.UtilityBar" hint-size="100%,32px"></x-import>
+  <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Header" on-navigate="{{ onNav }}" style="position:sticky;top:0;z-index:50" hint-size="100%,72px"></x-import>
+</sc-if>
+<main id="main" style="font-family:var(--font-ui)">
+  <sc-if value="{{ is404 }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="System · 404">
+      <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.PosterBand" circles="right" padding="{{ bandPad }}" hint-size="100%,460px">
+        <div style="max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,24px);display:flex;flex-direction:column;align-items:flex-start;gap:20px">
+          <span aria-hidden="true" style="position:relative;display:inline-block;font-family:var(--font-display);font-weight:800;font-size:{{ bigSize }};line-height:0.9;letter-spacing:-0.03em"><span style="color:var(--text-heading);text-shadow:2.00px 0.00px 0 #fff,1.85px 0.77px 0 #fff,1.41px 1.41px 0 #fff,0.77px 1.85px 0 #fff,0.00px 2.00px 0 #fff,-0.77px 1.85px 0 #fff,-1.41px 1.41px 0 #fff,-1.85px 0.77px 0 #fff,-2.00px 0.00px 0 #fff,-1.85px -0.77px 0 #fff,-1.41px -1.41px 0 #fff,-0.77px -1.85px 0 #fff,-0.00px -2.00px 0 #fff,0.77px -1.85px 0 #fff,1.41px -1.41px 0 #fff,1.85px -0.77px 0 #fff">404</span><span style="color:var(--text-accent)">.</span></span>
+          <h1 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:{{ h1Size }};line-height:1.2;color:#fff">This story hasn’t been written yet.</h1>
+          <p style="margin:0;font-size:17px;line-height:26px;color:rgba(255,255,255,0.88);max-width:520px">The page may have moved or been unpublished. Try a search, or start with something popular.</p>
+          <form role="search" action="Search.dc.html" style="width:min(480px,100%)"><x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Input" type="search" icon-left="search" placeholder="Search stories, Builders, startups" inverse="{{ true }}" hint-size="100%,44px"></x-import></form>
+        </div>
+      </x-import>
+      <section aria-label="Popular stories" style="max-width:1280px;margin:0 auto;padding:56px clamp(16px,3vw,24px) 96px">
+        <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.SectionTitle" title="Popular right now" hint-size="100%,72px"></x-import>
+        <div style="display:grid;grid-template-columns:{{ popCols }};gap:32px 24px">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.StoryCard" sponsored="{{ true }}" sponsor="Blue Nile Foundation" title="The Blue Nile Business Masterclass opens Cohort 2" date="6 Oct" read-time="4 min read" image-alt="Masterclass participants in a workshop" href="Article.dc.html" hint-size="100%,300px"></x-import>
+            <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Tooltip" placement="bottom" max-width="{{ 280 }}" open="{{ tipOpen }}" content="Sponsored stories are paid for by a partner and produced separately from our newsroom. We label them in words, every time." hint-size="140px,32px">
+              <button type="button" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:32px;font-size:13px;font-weight:500;color:var(--text-meta)"><x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Icon" name="info" size="{{ 14 }}" hint-size="14px,14px"></x-import>What is sponsored content?</button>
+            </x-import>
+          </div>
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.StoryCard" kicker="Diaspora" title="From the Mountains of Tigray to an Australian Record" date="6 Oct" read-time="9 min read" image-alt="Haftu Strintzos running" href="Article.dc.html" hint-size="100%,300px"></x-import>
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.StoryCard" kicker="Analysis" title="Q3 2026: where African venture money went" date="5 Oct" read-time="5 min read" image-alt="Chart of venture funding" href="Article.dc.html" hint-size="100%,300px"></x-import>
+        </div>
+      </section>
+    </div>
+  </sc-if>
+  <sc-if value="{{ is500 }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="System · 500" style="max-width:640px;margin:0 auto;padding:{{ calmPad }};display:flex;flex-direction:column;align-items:flex-start;gap:20px">
+      <span style="width:56px;height:56px;border-radius:50%;background:var(--surface-tint);display:flex;align-items:center;justify-content:center;color:var(--text-heading)"><x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Icon" name="server-crash" size="{{ 26 }}" hint-size="26px,26px"></x-import></span>
+      <h1 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:{{ h1Size }};line-height:1.2;color:var(--text-heading)">Something went wrong on our side</h1>
+      <p style="margin:0;font-size:17px;line-height:26px;color:var(--text-body)">We’re sorry. The page didn’t load because of a problem with our servers, not anything you did. Our team has been alerted.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Button" variant="primary" icon-left="rotate-cw" loading="{{ retrying }}" on-click="{{ retry }}" hint-size="140px,44px">Try again</x-import>
+        <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Button" variant="ghost" href="Home.dc.html" hint-size="140px,44px">Go to homepage</x-import>
+      </div>
+      <span style="font-size:13px;color:var(--text-meta)">Error reference: 500-7F3A · 7 Oct 2026, 09:42 WAT</span>
+    </section>
+  </sc-if>
+  <sc-if value="{{ isMaint }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="System · Maintenance">
+      <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.PosterBand" circles="both" padding="{{ maintPad }}" min-height="{{ maintMin }}" hint-size="100%,100vh">
+        <div style="max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,24px);display:flex;flex-direction:column;align-items:flex-start;gap:24px">
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Wordmark" inverse="{{ true }}" hint-size="160px,28px"></x-import>
+          <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Headline" as="h1" size="display" uppercase="{{ true }}" inverse="{{ true }}" stop="{{ true }}" dc-props="{{ maintH }}" hint-size="100%,160px">We’re building something</x-import>
+          <p style="margin:0;font-size:18px;line-height:28px;color:rgba(255,255,255,0.88);max-width:560px">The Builder is down for scheduled maintenance. We expect to be back by <strong style="color:#fff">11:00 WAT (7:00 pm AEDT), Wednesday 7 October</strong>.</p>
+          <div style="width:min(440px,100%);display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;color:rgba(255,255,255,0.88)">Get the Friday newsletter while you wait</span>
+            <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.NewsletterForm" compact="{{ true }}" hint-size="100%,96px"></x-import>
+          </div>
+        </div>
+      </x-import>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="System · Offline" style="max-width:640px;margin:0 auto;padding:{{ calmPad }};display:flex;flex-direction:column;align-items:flex-start;gap:20px">
+      <span style="width:56px;height:56px;border-radius:50%;background:var(--surface-tint);display:flex;align-items:center;justify-content:center;color:var(--text-heading)"><x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Icon" name="wifi-off" size="{{ 26 }}" hint-size="26px,26px"></x-import></span>
+      <h1 style="margin:0;font-family:var(--font-display);font-weight:700;font-size:{{ h1Size }};line-height:1.2;color:var(--text-heading)">You’re offline</h1>
+      <p style="margin:0;font-size:17px;line-height:26px;color:var(--text-body)">Check your connection. Stories you saved while signed in are still available to read.</p>
+      <ul style="list-style:none;margin:0;padding:0;width:100%;border-top:1px solid var(--border)">
+        <sc-for list="{{ saved }}" as="s" hint-placeholder-count="2">
+          <li style="display:flex;gap:12px;align-items:center;min-height:56px;border-bottom:1px solid var(--border);font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--text-heading)"><x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Icon" name="bookmark" size="{{ 18 }}" color="var(--text-accent)" hint-size="18px,18px"></x-import>{{ s }}</li>
+        </sc-for>
+      </ul>
+      <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Button" variant="primary" icon-left="rotate-cw" on-click="{{ reload }}" hint-size="140px,44px">Try again</x-import>
+    </section>
+  </sc-if>
+</main>
+<sc-if value="{{ chrome }}" hint-placeholder-val="{{ true }}">
+  <div style="overflow-x:clip;background:var(--surface-inverse-deep)">
+    <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Footer" mobile="{{ mobile }}" hint-size="100%,420px"></x-import>
+  </div>
+</sc-if>
+<sc-if value="{{ cookie }}" hint-placeholder-val="{{ false }}">
+  <div role="region" aria-label="Cookie consent" style="position:fixed;left:{{ ckSide }};right:{{ ckSide }};bottom:{{ ckSide }};z-index:120;display:flex;justify-content:center;pointer-events:none;font-family:var(--font-ui)">
+    <div ref="{{ ckRef }}" style="pointer-events:auto;width:min(960px,100%);background:var(--surface-card);border:1px solid var(--border);border-radius:12px;box-shadow:0 24px 64px rgba(7,22,49,0.18);padding:20px 24px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:4px">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--text-heading)">Cookies on The Builder</span>
+        <span style="font-size:14px;line-height:21px;color:var(--text-heading)">We use essential cookies to run the site, and optional ones to understand what you read and improve it. <a href="#" class="tb-link">Cookie policy</a></span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Button" variant="ghost" on-click="{{ manage }}" hint-size="100px,44px">Manage</x-import>
+        <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Button" variant="primary" on-click="{{ accept }}" hint-size="120px,44px">Accept all</x-import>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Dialog" open="{{ prefs }}" on-close="{{ closePrefs }}" title="Cookie preferences" description="Choose which optional cookies we can use. You can change this any time from the footer." sheet="{{ mobile }}" footer="{{ prefsFooter }}" hint-size="0px,0px">
+  <div style="display:flex;flex-direction:column;gap:4px;font-family:var(--font-ui)">
+    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="3">
+      <div style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--border)">
+        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:600;font-size:15px;color:var(--text-body)">{{ c.t }}</span><span style="font-size:13px;line-height:19px;color:var(--text-meta)">{{ c.d }}</span></span>
+        <x-import component-from-global-scope="TheBuilderDesignSystem_b0f242.Switch" checked="{{ c.on }}" disabled="{{ c.locked }}" on-change="{{ c.set }}" label="{{ c.aria }}" hint-size="44px,24px"></x-import>
+      </div>
+    </sc-for>
+  </div>
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;404&quot;,&quot;500&quot;,&quot;maintenance&quot;,&quot;offline&quot;,&quot;cookie&quot;,&quot;tooltip&quot;],&quot;default&quot;:&quot;404&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;States&quot;}}">
+const NAV = { Home: 'Home.dc.html', Stories: 'Stories.dc.html', 'The Builders': 'Builders.dc.html', Startups: 'Startups.dc.html', Industries: 'Category.dc.html', Diaspora: 'Diaspora.dc.html', Videos: 'Videos.dc.html', Opportunities: 'Opportunities.dc.html', About: 'About.dc.html' };
+class Component extends DCLogic {
+  state = { w: window.innerWidth, cookie: null, prefs: false, analytics: false, marketing: false, retrying: false };
+  q(k) { try { return new URLSearchParams(window.location.search).get(k); } catch (e) { return null; } }
+  componentDidMount() { this.r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.r); }
+  componentWillUnmount() { window.removeEventListener('resize', this.r); clearTimeout(this.rt); }
+  ckRef = (el) => { if (el && !el.__a) { el.__a = 1; const red = window.matchMedia('(prefers-reduced-motion: reduce)').matches; el.animate(red ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 400, delay: 300, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'backwards' }); } };
+  renderVals() {
+    const w = this.state.w, mobile = w < 768, desktop = w >= 1024;
+    const v = this.q('state') || this.props.view || '404';
+    const T = window.TheBuilderDesignSystem_b0f242;
+    const cookie = this.state.cookie != null ? this.state.cookie : (v === 'cookie' || v === '404');
+    const done = () => this.setState({ cookie: false, prefs: false });
+    return {
+      mobile, chrome: v !== 'maintenance',
+      is404: v === '404' || v === 'cookie' || v === 'tooltip', is500: v === '500', isMaint: v === 'maintenance', isOffline: v === 'offline',
+      tipOpen: v === 'tooltip' ? true : undefined,
+      bandPad: mobile ? '48px 0' : '88px 0', bigSize: mobile ? '104px' : '200px', h1Size: mobile ? '26px' : '36px',
+      popCols: desktop ? 'repeat(3, minmax(0,1fr))' : mobile ? '1fr' : 'repeat(2, minmax(0,1fr))',
+      calmPad: mobile ? '64px 16px 80px' : '120px 24px 140px',
+      retrying: this.state.retrying, retry: () => { this.setState({ retrying: true }); this.rt = setTimeout(() => this.setState({ retrying: false }), 1200); },
+      maintPad: mobile ? '64px 0' : '120px 0', maintMin: '100vh', maintH: { style: { fontSize: mobile ? '40px' : 'clamp(56px, 7vw, 96px)', lineHeight: '1.02' } },
+      saved: ['From the Mountains of Tigray to an Australian Record', 'Q3 2026: where African venture money went'], reload: () => window.location.reload(),
+      cookie, ckRef: this.ckRef, ckSide: mobile ? '12px' : '24px',
+      accept: () => this.setState({ cookie: false, analytics: true, marketing: true }), manage: () => this.setState({ prefs: true }),
+      prefs: this.state.prefs, closePrefs: () => this.setState({ prefs: false }),
+      cats: [
+        { t: 'Essential', d: 'Sign-in, security and remembering your edition. Always on.', on: true, locked: true, aria: 'Essential cookies, always on' },
+        { t: 'Analytics', d: 'Anonymous reading data that helps us decide what to cover.', on: this.state.analytics, set: (c) => this.setState({ analytics: c }), aria: 'Analytics cookies' },
+        { t: 'Marketing', d: 'Measures our newsletter and partner campaigns.', on: this.state.marketing, set: (c) => this.setState({ marketing: c }), aria: 'Marketing cookies' },
+      ],
+      prefsFooter: T ? React.createElement(React.Fragment, null, React.createElement(T.Button, { variant: 'ghost', onClick: done }, 'Save choices'), React.createElement(T.Button, { variant: 'primary', onClick: () => this.setState({ cookie: false, prefs: false, analytics: true, marketing: true }) }, 'Accept all')) : null,
+      onNav: (l) => window.TBH.nav(l),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -43,19 +43,19 @@ export default function HomeHero({ edition, loading }: HomeHeroProps) {
         
         {/* Lead Story */}
         <Link href={isNigeria ? '/stories/the-engineers-who-stayed' : '/stories/haftu-strintzos-australian-record'} className="home-cover group relative flex min-w-0 flex-col md:overflow-hidden md:rounded-lg md:bg-[var(--surface-inverse)] md:text-[var(--text-on-inverse)]">
-          <div className="home-cover-media relative -mx-4 aspect-[16/10] bg-[var(--surface-inverse)] md:mx-0">
+          <div className="home-cover-media relative mx-0 aspect-[16/10] bg-[var(--surface-inverse)] md:absolute md:inset-0 md:aspect-auto">
             {/* Design shows a blue background with a subtle overlay, not a photo */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_5%,var(--decoration-royal),transparent_58%)]" />
             <div className="tb-dots absolute inset-0 opacity-30" />
             <div className="absolute inset-0 [background:var(--hero-gradient)]" />
-            <span className="absolute left-4 top-4 text-[11px] text-[var(--text-on-inverse)]/60">Cover photo</span>
+            <span className="absolute left-4 top-4 text-[11px] text-[color:color-mix(in_srgb,var(--text-on-inverse)_60%,transparent)]">Cover photo</span>
           </div>
-          <div className="home-cover-copy relative z-10 pt-4 md:absolute md:bottom-0 md:left-0 md:w-full md:p-[clamp(20px,3.4vw,40px)] flex flex-col justify-end">
+          <div className="home-cover-copy relative z-10 pt-4 md:mt-auto md:w-full md:p-[clamp(20px,3.4vw,40px)] flex flex-col justify-end">
             <Kicker inverse className="mb-[14px]">{lead.kicker}</Kicker>
             <h1 className="mb-[14px] font-display text-[30px] font-extrabold leading-[36px] tracking-[-.02em] md:text-[clamp(30px,3.6vw,52px)] md:leading-[1.06]">
               {lead.title}.
             </h1>
-            <p className="home-cover-summary text-[15px] leading-[23px] md:text-[17px] md:leading-[26px] md:text-[var(--text-on-inverse)]/90 mb-[14px] max-w-[600px] line-clamp-2">
+            <p className="home-cover-summary text-[15px] leading-[23px] md:text-[17px] md:leading-[26px] md:text-[color:color-mix(in_srgb,var(--text-on-inverse)_90%,transparent)] mb-[14px] max-w-[600px] line-clamp-2">
               {lead.summary}
             </p>
             <div className="home-cover-meta flex flex-wrap items-center gap-[6px] text-[13px] leading-[18px] font-ui md:text-[var(--text-meta-on-inverse)]">

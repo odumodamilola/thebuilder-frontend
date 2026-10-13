@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const shell = shellForPath(pathname)
 
   if (shell !== 'public') {
-    return <div className={shell === 'console' ? 'min-h-screen bg-console-bg' : 'min-h-screen bg-surface-page'}>{children}</div>
+    return <div className={shell === 'console' ? 'min-h-screen bg-[var(--surface-console)]' : 'min-h-screen bg-surface-page'}>{children}</div>
   }
 
   return (

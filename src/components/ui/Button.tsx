@@ -15,12 +15,12 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     const classes = cn(
       'inline-flex items-center justify-center font-ui font-semibold transition-colors rounded-md disabled:opacity-50 disabled:cursor-not-allowed',
       {
-        'bg-navy-900 text-white hover:bg-navy-800': variant === 'primary',
-        'bg-navy-50 text-navy-900 hover:bg-slate-200': variant === 'secondary',
-        'bg-brand-red text-white hover:bg-red-700': variant === 'accent',
-        'bg-transparent text-navy-900 hover:bg-slate-100': variant === 'ghost',
-        'border border-line text-ink hover:border-slate-400': variant === 'outline',
-        'bg-white text-navy-900 hover:bg-slate-100': variant === 'inverse',
+        'bg-[var(--surface-inverse)] text-[var(--text-on-inverse)] hover:bg-[var(--primary-hover)]': variant === 'primary',
+        'bg-[var(--surface-tint)] text-[var(--text-heading)] hover:bg-[var(--surface-skeleton)]': variant === 'secondary',
+        'bg-[var(--accent)] text-[var(--text-on-inverse)] hover:bg-[var(--accent-hover)]': variant === 'accent',
+        'bg-transparent text-[var(--text-heading)] hover:bg-[var(--surface-skeleton)]': variant === 'ghost',
+        'border border-[var(--border)] text-[var(--text-body)] hover:border-[var(--border-strong)]': variant === 'outline',
+        'bg-[var(--surface-card)] text-[var(--text-heading)] hover:bg-[var(--surface-skeleton)]': variant === 'inverse',
         'px-4 py-2 text-[14px]': size === 'sm',
         'px-6 py-3 text-[16px]': size === 'md',
         'px-8 py-4 text-[17px]': size === 'lg',

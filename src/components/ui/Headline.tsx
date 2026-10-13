@@ -29,12 +29,12 @@ export function Headline({
       className={twMerge(
         "font-display font-bold",
         uppercase && "uppercase",
-        inverse ? "text-white" : "text-navy-900",
+        inverse ? "text-[var(--text-on-inverse)]" : "text-[var(--text-heading)]",
         className
       )}
     >
       {children}
-      {stop && <span className="text-brand-red">.</span>}
+      {stop && <span className="text-[var(--text-accent)]">.</span>}
     </Component>
   );
 }

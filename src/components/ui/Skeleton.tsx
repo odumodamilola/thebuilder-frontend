@@ -16,7 +16,7 @@ export function Skeleton({ className = '', lines = 1, aspectRatio, radius = 'md'
     full: 'rounded-full'
   }[radius];
 
-  const baseClass = `bg-navy-50 animate-pulse ${radiusClass} ${className}`;
+  const baseClass = `bg-[var(--surface-tint)] animate-pulse ${radiusClass} ${className}`;
 
   if (aspectRatio) {
     return (

@@ -13,6 +13,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      ringOffsetColor: {
+        DEFAULT: 'var(--surface-page)',
+      },
       /* ─── Brand colours ─── */
       colors: {
         'navy-900': '#0B2046',

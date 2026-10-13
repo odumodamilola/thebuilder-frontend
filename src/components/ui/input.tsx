@@ -12,7 +12,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex flex-col gap-2 w-full">
         {label && (
-          <label className="font-ui font-semibold text-sm text-navy-900">
+          <label className="font-ui font-semibold text-sm text-[var(--text-heading)]">
             {label}
           </label>
         )}
@@ -20,22 +20,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={cn(
-              "h-11 px-4 w-full rounded-lg bg-white border border-line text-ink font-ui text-base transition-colors",
-              "focus:outline-none focus:border-navy-900 focus:ring-1 focus:ring-navy-900",
-              "placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-400",
+              "h-11 px-4 w-full rounded-lg bg-[var(--surface-card)] border border-[var(--border)] text-[var(--text-body)] font-ui text-base transition-colors",
+              "focus:outline-none focus:border-[var(--border-emphasis)] focus:ring-1 focus:ring-[var(--focus-ring)]",
+              "placeholder:text-[var(--text-meta)] disabled:bg-[var(--surface-hover)] disabled:text-[var(--text-meta)]",
               rightElement && "pr-10",
-              error && "border-brand-red focus:border-brand-red focus:ring-brand-red",
+              error && "border-[var(--accent)] focus:border-[var(--accent)] focus:ring-[var(--focus-ring)]",
               className
             )}
             {...props}
           />
           {rightElement && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-[var(--text-meta)]">
               {rightElement}
             </div>
           )}
         </div>
-        {error && <span className="text-sm font-ui text-brand-red">{error}</span>}
+        {error && <span className="text-sm font-ui text-[var(--text-accent)]">{error}</span>}
       </div>
     )
   }

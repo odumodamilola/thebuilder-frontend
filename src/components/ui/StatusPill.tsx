@@ -12,17 +12,17 @@ export function StatusPill({ status, size = 'default', className }: StatusPillPr
   const sizeClasses = size === 'sm' ? 'px-2 py-0.5 rounded text-[11px]' : 'px-2.5 py-0.5 rounded-full text-xs';
   
   const statusStyles: Record<string, string> = {
-    draft: "bg-slate-200 text-slate-700",
-    published: "bg-navy-900 text-white",
-    review: "bg-royal text-white",
-    scheduled: "bg-blush text-navy-900",
-    changes: "bg-brand-red/10 text-brand-red"
+    draft: "bg-[var(--surface-skeleton)] text-[var(--text-body)]",
+    published: "bg-[var(--surface-inverse)] text-[var(--text-on-inverse)]",
+    review: "bg-[var(--decoration-royal)] text-[var(--text-on-inverse)]",
+    scheduled: "bg-[var(--surface-blush)] text-[var(--text-heading)]",
+    changes: "bg-[color:color-mix(in_srgb,var(--accent)_10%,transparent)] text-[var(--text-accent)]"
   };
 
   const displayStatus = status === 'changes' ? 'Changes req' : status;
 
   return (
-    <span className={cn(baseClasses, sizeClasses, statusStyles[status] || "bg-slate-200 text-slate-700", className)}>
+    <span className={cn(baseClasses, sizeClasses, statusStyles[status] || "bg-[var(--surface-skeleton)] text-[var(--text-body)]", className)}>
       {displayStatus}
     </span>
   );

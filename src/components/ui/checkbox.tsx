@@ -24,16 +24,16 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             ref={ref}
             onChange={handleChange}
             className={cn(
-              "w-5 h-5 rounded border border-line text-navy-900",
-              "focus:ring-navy-900 focus:ring-offset-2",
-              error && "border-brand-red",
+              "w-5 h-5 rounded border border-[var(--border)] text-[var(--text-heading)]",
+              "focus:ring-[var(--focus-ring)] focus:ring-offset-2",
+              error && "border-[var(--accent)]",
               className
             )}
             {...props}
           />
-          <span className="font-ui text-sm text-ink">{label}</span>
+          <span className="font-ui text-sm text-[var(--text-body)]">{label}</span>
         </label>
-        {error && <span className="text-sm font-ui text-brand-red">{error}</span>}
+        {error && <span className="text-sm font-ui text-[var(--text-accent)]">{error}</span>}
       </div>
     )
   }

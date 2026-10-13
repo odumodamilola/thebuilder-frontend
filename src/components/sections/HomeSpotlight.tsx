@@ -27,10 +27,10 @@ export default function HomeSpotlight({ loading }: { loading?: boolean }) {
             <p className="text-[var(--text-meta-on-inverse)] font-ui">Early-stage companies our editors are watching this quarter.</p>
           </div>
           <div className="hidden md:flex gap-2 mb-2">
-            <button type="button" aria-label="Previous startups" onClick={() => scroll(-1)} className="w-11 h-11 rounded-full border border-[var(--border-inverse)] flex items-center justify-center text-[var(--text-on-inverse)] hover:bg-[var(--surface-card)]/10 transition-colors">
+            <button type="button" aria-label="Previous startups" onClick={() => scroll(-1)} className="w-11 h-11 rounded-full border border-[var(--border-inverse)] flex items-center justify-center text-[var(--text-on-inverse)] hover:bg-[color:color-mix(in_srgb,var(--text-on-inverse)_10%,transparent)] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <button type="button" aria-label="Next startups" onClick={() => scroll(1)} className="w-11 h-11 rounded-full border border-[var(--border-inverse)] flex items-center justify-center text-[var(--text-on-inverse)] hover:bg-[var(--surface-card)]/10 transition-colors">
+            <button type="button" aria-label="Next startups" onClick={() => scroll(1)} className="w-11 h-11 rounded-full border border-[var(--border-inverse)] flex items-center justify-center text-[var(--text-on-inverse)] hover:bg-[color:color-mix(in_srgb,var(--text-on-inverse)_10%,transparent)] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           </div>
@@ -52,7 +52,7 @@ export default function HomeSpotlight({ loading }: { loading?: boolean }) {
               <p className="text-[var(--text-meta-on-inverse)] text-sm mb-6 flex-1">{s.desc}</p>
               <div className="flex gap-2">
                 {s.tags.map(t => (
-                  <span key={t} className="px-2 py-1 bg-[var(--surface-card)]/5 text-[var(--text-meta-on-inverse)] rounded text-[11px] font-semibold tracking-wide">
+                  <span key={t} className="px-2 py-1 bg-[color:color-mix(in_srgb,var(--text-on-inverse)_5%,transparent)] text-[var(--text-meta-on-inverse)] rounded text-[11px] font-semibold tracking-wide">
                     {t}
                   </span>
                 ))}

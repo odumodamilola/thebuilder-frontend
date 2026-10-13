@@ -37,7 +37,7 @@ export default function NewsletterForm({ className }: { className?: string }) {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           aria-describedby={status === 'error' ? `${emailId}-error` : undefined}
-          className="min-h-12 min-w-0 flex-1 rounded-control border border-[var(--border-inverse)] bg-[var(--surface-card)]/5 px-4 py-3 text-sm text-[var(--text-on-inverse)] placeholder:text-[var(--text-meta-on-inverse)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--surface-inverse)]"
+          className="min-h-12 min-w-0 flex-1 rounded-control border border-[var(--border-inverse)] bg-[color:color-mix(in_srgb,var(--text-on-inverse)_5%,transparent)] px-4 py-3 text-sm text-[var(--text-on-inverse)] placeholder:text-[var(--text-meta-on-inverse)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--surface-inverse)]"
         />
         <button
           type="submit"
