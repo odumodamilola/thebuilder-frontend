@@ -1,42 +1,54 @@
-import React from 'react';
+import type { CSSProperties } from "react";
 
 interface SkeletonProps {
   className?: string;
   lines?: number;
   aspectRatio?: string;
-  radius?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+  radius?: "none" | "sm" | "md" | "lg" | "full";
+  width?: CSSProperties["width"];
+  height?: CSSProperties["height"];
+  inverse?: boolean;
 }
 
-export function Skeleton({ className = '', lines = 1, aspectRatio, radius = 'md' }: SkeletonProps) {
-  const radiusClass = {
-    none: 'rounded-none',
-    sm: 'rounded-sm',
-    md: 'rounded-md',
-    lg: 'rounded-lg',
-    full: 'rounded-full'
-  }[radius];
-
-  const baseClass = `bg-[var(--surface-tint)] animate-pulse ${radiusClass} ${className}`;
-
-  if (aspectRatio) {
+/** Source: UI/UX HTML export, components/core/Skeleton.jsx. */
+export function Skeleton({
+  className = "",
+  lines,
+  aspectRatio,
+  radius = "md",
+  width = "100%",
+  height = 16,
+  inverse = false,
+}: SkeletonProps) {
+  const style: CSSProperties = {
+    display: "block",
+    width,
+    height: aspectRatio ? undefined : height,
+    aspectRatio,
+    borderRadius: { none: 0, sm: 4, md: 6, lg: 12, full: "50%" }[radius],
+    background: inverse ? "rgba(255,255,255,0.08)" : "var(--surface-skeleton)",
+  };
+  if (lines)
     return (
-      <div className={`${baseClass}`} style={{ aspectRatio }} />
-    );
-  }
-
-  if (lines > 1) {
-    return (
-      <div className="space-y-2">
-        {Array.from({ length: lines }).map((_, i) => (
-          <div
+      <span
+        aria-hidden="true"
+        className={`flex flex-col gap-2 ${className}`}
+        style={{ width }}
+      >
+        {Array.from({ length: lines }, (_, i) => (
+          <span
             key={i}
-            className={`${baseClass} h-4 w-full`}
-            style={{ width: i === lines - 1 ? '70%' : '100%' }}
+            className="tb-skeleton"
+            style={{ ...style, width: i === lines - 1 ? "62%" : "100%" }}
           />
         ))}
-      </div>
+      </span>
     );
-  }
-
-  return <div className={`${baseClass} h-4 w-full`} />;
+  return (
+    <span
+      aria-hidden="true"
+      className={`tb-skeleton ${className}`}
+      style={style}
+    />
+  );
 }

@@ -1,0 +1,9 @@
+{
+  "id": "GHSA-vfj7-8cjw-p6xm",
+  "status": "mitigated-pending-upstream",
+  "owner": "The Builder engineering lead",
+  "reviewBy": "2026-10-30T23:59:59Z",
+  "scope": "Development tooling only; no public or CMS input is permitted as a build/lint glob pattern.",
+  "allowedAffectedPackages": ["@next/eslint-plugin-next", "braces", "chokidar", "eslint-config-next", "fast-glob", "micromatch", "tailwindcss"],
+  "allowedContentGlobs": ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}", "./src/context/**/*.{js,ts,jsx,tsx,mdx}", "./src/features/**/*.{js,ts,jsx,tsx,mdx}", "./src/hooks/**/*.{js,ts,jsx,tsx,mdx}", "./src/lib/**/*.{js,ts,jsx,tsx,mdx}"]
+}

@@ -1,5 +1,5 @@
-import * as LucideIcons from 'lucide-react';
-import { LucideProps } from 'lucide-react';
+import * as LucideIcons from "lucide-react";
+import { LucideProps } from "lucide-react";
 
 export interface IconProps extends LucideProps {
   name: string;
@@ -7,7 +7,10 @@ export interface IconProps extends LucideProps {
 
 export function Icon({ name, ...props }: IconProps) {
   // Convert kebab-case to PascalCase
-  const pascalName = name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+  const pascalName = name
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
   const LucideIcon = (LucideIcons as any)[pascalName];
   if (!LucideIcon) {
     console.warn(`Icon ${name} (${pascalName}) not found in lucide-react`);

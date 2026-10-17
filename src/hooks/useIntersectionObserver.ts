@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, RefObject } from 'react';
+import { useEffect, useState, RefObject } from "react";
 
 interface Options extends IntersectionObserverInit {
   freezeOnceVisible?: boolean;
@@ -9,9 +9,9 @@ export function useIntersectionObserver(
   {
     threshold = 0,
     root = null,
-    rootMargin = '0%',
+    rootMargin = "0%",
     freezeOnceVisible = false,
-  }: Options = {}
+  }: Options = {},
 ): IntersectionObserverEntry | undefined {
   const [entry, setEntry] = useState<IntersectionObserverEntry>();
 
@@ -33,7 +33,7 @@ export function useIntersectionObserver(
     observer.observe(node);
 
     return () => observer.disconnect();
-  }, [elementRef?.current, JSON.stringify(threshold), root, rootMargin, frozen]);
+  }, [elementRef, threshold, root, rootMargin, frozen]);
 
   return entry;
 }

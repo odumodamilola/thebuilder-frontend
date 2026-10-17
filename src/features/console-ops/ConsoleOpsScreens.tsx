@@ -1,63 +1,1326 @@
-import { FormEvent, ReactNode, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
-import { ConsoleLayout } from '@/components/layout/ConsoleLayout';
-import { Icon } from '@/components/ui/Icon';
+import { YouTubeControls } from "./YouTubeControls";
+import { videoFormats } from "@/lib/editorial-policy";
+import { SiteConfigurationForm } from "./SiteConfigurationForm";
+import Link from "next/link";
+import {
+  useConsoleData,
+  text,
+  type ConsoleRecord,
+} from "@/context/ConsoleDataContext";
+import { useToast } from "@/context/ToastContext";
+import { http, errorMessage, type ApiEnvelope } from "@/lib/http";
+import { LoadingDots } from "@/components/ui/LoadingDots";
+import { FormEvent, ReactNode, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { ConsoleLayout } from "@/components/layout/ConsoleLayout";
+import { Icon } from "@/components/ui/Icon";
 
-const button = 'inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal';
+const button =
+  "inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
 const primary = `${button} bg-navy-900 text-white hover:bg-navy-700`;
 const secondary = `${button} border border-line bg-white text-navy-900 hover:bg-navy-50`;
-const input = 'min-h-10 rounded-md border border-line bg-white px-3 text-sm text-ink outline-none focus:border-royal focus:ring-2 focus:ring-royal/20';
+const input =
+  "min-h-10 rounded-md border border-line bg-white px-3 text-sm text-ink outline-none focus:border-royal focus:ring-2 focus:ring-royal/20";
 
-function Shell({ title, eyebrow, action, children }: { title: string; eyebrow: string; action?: ReactNode; children: ReactNode }) {
-  return <ConsoleLayout><div className="mx-auto max-w-[1180px] space-y-6">
-    <header className="flex flex-col gap-4 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
-      <div><p className="mb-1 text-xs font-bold uppercase tracking-[.12em] text-brand-red">{eyebrow}</p><h1 className="font-display text-2xl font-extrabold tracking-tight text-navy-900 sm:text-[32px]">{title}</h1></div>{action}
-    </header>{children}</div></ConsoleLayout>;
+function Shell({
+  title,
+  eyebrow,
+  action,
+  children,
+}: {
+  title: string;
+  eyebrow: string;
+  action?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <ConsoleLayout>
+      <div className="mx-auto max-w-[1180px] space-y-6">
+        <header className="flex flex-col gap-4 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-1 text-xs font-bold uppercase tracking-[.12em] text-brand-red">
+              {eyebrow}
+            </p>
+            <h1 className="font-display text-2xl font-extrabold tracking-tight text-navy-900 sm:text-[32px]">
+              {title}
+            </h1>
+          </div>
+          {action}
+        </header>
+        {children}
+      </div>
+    </ConsoleLayout>
+  );
 }
 
-const Card = ({ children, className = '' }: { children: ReactNode; className?: string }) => <section className={`rounded-lg border border-line bg-white ${className}`}>{children}</section>;
-const Toolbar = ({ children }: { children: ReactNode }) => <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row sm:items-center">{children}</div>;
-const Pill = ({ children, tone = 'slate' }: { children: ReactNode; tone?: 'slate' | 'green' | 'red' | 'amber' | 'blue' }) => {
-  const tones = { slate: 'bg-navy-50 text-slate', green: 'bg-emerald-50 text-emerald-700', red: 'bg-red-50 text-red-700', amber: 'bg-amber-50 text-amber-800', blue: 'bg-blue-50 text-blue-700' };
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${tones[tone]}`}>{children}</span>;
+const Card = ({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) => (
+  <section className={`rounded-lg border border-line bg-white ${className}`}>
+    {children}
+  </section>
+);
+const Toolbar = ({ children }: { children: ReactNode }) => (
+  <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row sm:items-center">
+    {children}
+  </div>
+);
+const Pill = ({
+  children,
+  tone = "slate",
+}: {
+  children: ReactNode;
+  tone?: "slate" | "green" | "red" | "amber" | "blue";
+}) => {
+  const tones = {
+    slate: "bg-navy-50 text-slate",
+    green: "bg-emerald-50 text-emerald-700",
+    red: "bg-red-50 text-red-700",
+    amber: "bg-amber-50 text-amber-800",
+    blue: "bg-blue-50 text-blue-700",
+  };
+  return (
+    <span
+      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${tones[tone]}`}
+    >
+      {children}
+    </span>
+  );
 };
 
 const files: Array<[string, string, string]> = [
-  ['lagos-fintech.jpg', '2400 × 1600', '3.2 MB'], ['amara-okafor.jpg', '1600 × 2000', '1.8 MB'], ['solar-grid.jpg', '2200 × 1467', '2.6 MB'], ['founders-room.jpg', '1920 × 1280', '2.1 MB'], ['africa-map.svg', '1200 × 800', '148 KB'], ['builder-mark.png', '900 × 900', '680 KB'],
+  ["lagos-fintech.jpg", "2400 × 1600", "3.2 MB"],
+  ["amara-okafor.jpg", "1600 × 2000", "1.8 MB"],
+  ["solar-grid.jpg", "2200 × 1467", "2.6 MB"],
+  ["founders-room.jpg", "1920 × 1280", "2.1 MB"],
+  ["africa-map.svg", "1200 × 800", "148 KB"],
+  ["builder-mark.png", "900 × 900", "680 KB"],
 ];
 export function MediaScreen() {
-  const [selected, setSelected] = useState(0); const [query, setQuery] = useState('');
-  const shown = files.filter(f => f[0].includes(query.toLowerCase()));
-  return <Shell eyebrow="Asset management" title="Media library" action={<label className={primary}><Icon name="upload" className="h-4 w-4"/>Upload files<input type="file" multiple className="sr-only" /></label>}>
-    <Card><Toolbar><div className="relative flex-1"><Icon name="search" className="absolute left-3 top-3 h-4 w-4 text-slate"/><input aria-label="Search media" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search media…" className={`${input} w-full pl-9`}/></div><select className={input} aria-label="File type"><option>All file types</option><option>Images</option><option>Video</option></select><button className={secondary}><Icon name="sliders-horizontal" className="h-4 w-4"/>Filter</button></Toolbar>
-      <div className="grid lg:grid-cols-[1fr_310px]"><div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3">{shown.map((f,i)=><button key={f[0]} onClick={()=>setSelected(i)} className={`overflow-hidden rounded-lg border text-left ${selected===i?'border-royal ring-2 ring-royal/20':'border-line'}`}><div className="aspect-[4/3] bg-gradient-to-br from-navy-50 to-slate-300/40 p-3"><Icon name="image" className="h-8 w-8 text-navy-700"/></div><div className="p-3"><strong className="block truncate text-sm text-ink">{f[0]}</strong><span className="text-xs text-slate">{f[2]}</span></div></button>)}</div>
-      <aside className="border-t border-line p-5 lg:border-l lg:border-t-0"><p className="text-xs font-bold uppercase tracking-wider text-slate">File details</p><div className="my-4 aspect-video rounded-lg bg-navy-50 p-4"><Icon name="image" className="h-10 w-10 text-navy-700"/></div><h2 className="font-semibold text-ink">{files[selected]?.[0]}</h2><dl className="mt-4 grid grid-cols-2 gap-y-3 text-sm"><dt className="text-slate">Dimensions</dt><dd>{files[selected]?.[1]}</dd><dt className="text-slate">Size</dt><dd>{files[selected]?.[2]}</dd><dt className="text-slate">Uploaded</dt><dd>12 Oct 2026</dd></dl><label className="mt-5 block text-xs font-semibold text-slate">Alt text<textarea className={`${input} mt-2 min-h-24 w-full py-2`} defaultValue="Editorial image for The Builder"/></label><button className={`${primary} mt-3 w-full`}>Save details</button></aside></div>
-    </Card></Shell>;
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const [selected, setSelected] = useState(live?.records[0]?.id || ""),
+    [query, setQuery] = useState(""),
+    [alt, setAlt] = useState(text(live?.records[0], "alt")),
+    [credit, setCredit] = useState(text(live?.records[0], "credit")),
+    [file, setFile] = useState<File | null>(null),
+    [busy, setBusy] = useState(false);
+  const records = (live?.records || []).filter((x) =>
+    text(x, "alt").toLowerCase().includes(query.toLowerCase()),
+  );
+  const item = records.find((x) => x.id === selected);
+  async function save() {
+    setBusy(true);
+    try {
+      if (file) {
+        const body = new FormData();
+        body.append("file", file);
+        body.append("alt", alt);
+        body.append("credit", credit);
+        await http("/console/media", { method: "POST", body });
+      } else if (item)
+        await http("/console/media/" + item.id, {
+          method: "PATCH",
+          body: { alt, credit },
+        });
+      toast("Media saved");
+      setFile(null);
+      live?.retry();
+    } catch (e) {
+      toast(errorMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Shell
+      eyebrow="Asset management"
+      title="Media library"
+      action={
+        <label className={primary}>
+          <Icon name="upload" className="h-4 w-4" />
+          Upload image
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="sr-only"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+          />
+        </label>
+      }
+    >
+      <Card>
+        <Toolbar>
+          <input
+            aria-label="Search media"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search media…"
+            className={input + " w-full"}
+          />
+        </Toolbar>
+        <div className="grid lg:grid-cols-[1fr_310px]">
+          <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3">
+            {records.map((x) => (
+              <button
+                key={x.id}
+                onClick={() => {
+                  setSelected(x.id || "");
+                  setAlt(text(x, "alt"));
+                  setCredit(text(x, "credit"));
+                  setFile(null);
+                }}
+                className="overflow-hidden rounded-lg border border-line text-left"
+              >
+                <div className="aspect-[4/3] bg-gradient-to-br from-navy-50 to-slate-300/40 p-3">
+                  <img
+                    src={text(x, "url")}
+                    alt={text(x, "alt")}
+                    className="size-full object-cover"
+                  />
+                </div>
+                <div className="p-3">
+                  <strong className="block truncate text-sm text-ink">
+                    {text(x, "alt")}
+                  </strong>
+                  <span className="text-xs text-slate">
+                    {Number(x.size || 0).toLocaleString()} bytes
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+          <aside className="border-t border-line p-5 lg:border-l lg:border-t-0">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate">
+              File details
+            </p>
+            <h2 className="mt-4 font-semibold text-ink">
+              {file?.name || text(item, "path")}
+            </h2>
+            <label className="mt-5 block text-xs font-semibold text-slate">
+              Alt text
+              <textarea
+                className={input + " mt-2 min-h-24 w-full py-2"}
+                value={alt}
+                onChange={(e) => setAlt(e.target.value)}
+              />
+            </label>
+            <label className="mt-4 block text-xs font-semibold text-slate">
+              Credit
+              <input
+                className={input + " mt-2 w-full"}
+                value={credit}
+                onChange={(e) => setCredit(e.target.value)}
+              />
+            </label>
+            <button
+              className={primary + " mt-3 w-full"}
+              disabled={busy || !alt || (!file && !item)}
+              onClick={save}
+            >
+              {busy ? <LoadingDots /> : file ? "Upload image" : "Save details"}
+            </button>
+            {item && !file && (
+              <button
+                className={secondary + " mt-3 w-full"}
+                disabled={busy}
+                onClick={async () => {
+                  if (!window.confirm("Delete this unused image?")) return;
+                  setBusy(true);
+                  try {
+                    await http("/console/media/" + item.id, {
+                      method: "DELETE",
+                    });
+                    toast("Media deleted");
+                    live?.retry();
+                  } catch (e) {
+                    toast(errorMessage(e));
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                Delete image
+              </button>
+            )}
+          </aside>
+        </div>
+      </Card>
+    </Shell>
+  );
 }
 
-const categories = ['Stories', 'Builders', 'Startups', 'Opportunities', 'Diaspora'];
 export function TaxonomyScreen() {
- const [active,setActive]=useState('Stories'); const [tags,setTags]=useState(['Innovation','Fintech','Leadership','Climate','Funding']);
- return <Shell eyebrow="Content structure" title="Taxonomy" action={<button className={primary} onClick={()=>setTags([...tags,'New tag'])}><Icon name="plus" className="h-4 w-4"/>Add taxonomy</button>}><div className="grid gap-6 lg:grid-cols-[360px_1fr]"><Card><div className="border-b border-line p-5"><h2 className="font-display text-lg font-bold text-navy-900">Category tree</h2><p className="mt-1 text-sm text-slate">Drag to reorder the public navigation.</p></div><ul className="p-3">{categories.map((c,i)=><li key={c}><button onClick={()=>setActive(c)} className={`flex min-h-12 w-full items-center gap-3 rounded-md px-3 text-left text-sm ${active===c?'bg-navy-50 font-semibold text-navy-900':'text-slate hover:bg-console-bg'}`}><Icon name="grip-vertical" className="h-4 w-4 text-slate-300"/><Icon name={i===4?'globe':'folder'} className="h-4 w-4"/>{c}<span className="ml-auto text-xs">{12+i*7}</span></button></li>)}</ul></Card><div className="space-y-6"><Card className="p-5"><div className="flex items-start justify-between"><div><p className="text-xs font-bold uppercase tracking-wider text-brand-red">Category</p><h2 className="mt-1 font-display text-xl font-bold text-navy-900">{active}</h2></div><Pill tone="green">Published</Pill></div><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold text-ink">Name<input className={`${input} mt-2 w-full`} value={active} onChange={e=>setActive(e.target.value)}/></label><label className="text-sm font-semibold text-ink">Slug<input className={`${input} mt-2 w-full`} value={active.toLowerCase()} readOnly/></label></div><label className="mt-4 block text-sm font-semibold text-ink">Description<textarea className={`${input} mt-2 min-h-24 w-full py-2`} defaultValue={`Reporting and profiles from ${active}.`}/></label><div className="mt-5 flex justify-end gap-2"><button className={secondary}>Archive</button><button className={primary}>Save changes</button></div></Card><Card className="p-5"><h2 className="font-display text-lg font-bold text-navy-900">Tags</h2><div className="mt-4 flex flex-wrap gap-2">{tags.map(t=><button key={t} onClick={()=>setTags(tags.filter(x=>x!==t))} className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-2 text-sm font-medium text-ink hover:border-brand-red">{t}<Icon name="x" className="h-3.5 w-3.5"/></button>)}</div></Card></div></div></Shell>;
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const router = useRouter();
+  const kind = router.query.kind === "tags" ? "tags" : "categories";
+  const [name, setName] = useState(""),
+    [slug, setSlug] = useState(""),
+    [id, setId] = useState(""),
+    [parent, setParent] = useState(""),
+    [description, setDescription] = useState(""),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  const reset = () => {
+    setId("");
+    setName("");
+    setSlug("");
+    setParent("");
+    setDescription("");
+    setError("");
+  };
+  const list = (
+    Array.isArray(live?.document[kind]) ? live!.document[kind] : []
+  ) as ConsoleRecord[];
+  return (
+    <Shell eyebrow="Classification" title="Taxonomy">
+      <div className="flex gap-2">
+        {(["categories", "tags"] as const).map((x) => (
+          <button
+            key={x}
+            className={secondary}
+            disabled={busy}
+            aria-pressed={kind === x}
+            onClick={() => {
+              reset();
+              void router.push(
+                { pathname: router.pathname, query: { kind: x } },
+                undefined,
+                { shallow: true },
+              );
+            }}
+          >
+            {x}
+          </button>
+        ))}
+      </div>
+      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <Card className="min-w-0 overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr>
+                <th className="p-4">Name</th>
+                <th>Slug</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((x) => (
+                <tr key={x.id} className="border-t border-line">
+                  <td className="p-4">{x.name}</td>
+                  <td>{text(x, "slug")}</td>
+                  <td>
+                    <button
+                      className={button}
+                      onClick={() => {
+                        setId(x.id || "");
+                        setName(text(x, "name"));
+                        setSlug(text(x, "slug"));
+                        setParent(text(x, "parent_id"));
+                        setDescription(text(x, "description"));
+                        setError("");
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {list.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="p-4 text-slate">
+                    No {kind} yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </Card>
+        <Card className="p-5">
+          <h2 className="font-semibold">
+            {id ? "Edit" : "Add"} {kind === "categories" ? "category" : "tag"}
+          </h2>
+          <form
+            className="mt-4 space-y-4"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setError("");
+              setBusy(true);
+              try {
+                await http("/console/taxonomy/" + kind, {
+                  method: "PUT",
+                  body: {
+                    id: id || undefined,
+                    name,
+                    slug,
+                    ...(kind === "categories"
+                      ? {
+                          parent_id: parent || null,
+                          description: description || null,
+                        }
+                      : {}),
+                  },
+                });
+                toast("Taxonomy saved");
+                reset();
+                live?.retry();
+              } catch (e) {
+                setError(errorMessage(e));
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {error && (
+              <p role="alert" className="text-sm text-brand-red">
+                {error}
+              </p>
+            )}
+            <label className="block text-sm font-semibold">
+              Name
+              <input
+                required
+                maxLength={120}
+                className={input + " mt-2 w-full"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label className="block text-sm font-semibold">
+              Slug
+              <input
+                required
+                maxLength={120}
+                pattern={"[a-zA-Z0-9_\\-]+"}
+                className={input + " mt-2 w-full"}
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+              />
+            </label>
+            {kind === "categories" && (
+              <>
+                <label className="block text-sm font-semibold">
+                  Parent category
+                  <select
+                    className={input + " mt-2 w-full"}
+                    value={parent}
+                    onChange={(e) => setParent(e.target.value)}
+                  >
+                    <option value="">No parent</option>
+                    {list
+                      .filter((category) => category.id !== id)
+                      .map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold">
+                  Description
+                  <textarea
+                    className={input + " mt-2 w-full py-3"}
+                    rows={4}
+                    maxLength={2000}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </label>
+              </>
+            )}
+            <button className={primary} disabled={busy}>
+              {busy ? <LoadingDots /> : "Save"}
+            </button>
+            {id && (
+              <button
+                type="button"
+                className={secondary}
+                disabled={busy}
+                onClick={reset}
+              >
+                Cancel edit
+              </button>
+            )}
+          </form>
+        </Card>
+      </div>
+    </Shell>
+  );
 }
 
-const audit = [
- ['Folake Ojo','Published story','The next wave of African fintech','12 Oct 2026, 14:32'],['David O.','Changed role','Sarah Lee → Senior editor','12 Oct 2026, 12:08'],['Sarah Lee','Updated homepage','Lead story module','12 Oct 2026, 10:41'],['System','Failed sign-in','Unknown device · 197.210.53.12','12 Oct 2026, 08:14'],['Amina Bello','Archived campaign','Future of Work 2026','11 Oct 2026, 17:59'],
-];
-export function AuditScreen(){return <Shell eyebrow="Governance" title="Audit log" action={<button className={secondary}><Icon name="download" className="h-4 w-4"/>Export CSV</button>}><Card><Toolbar><input className={`${input} flex-1`} placeholder="Search actor, action or resource…" aria-label="Search audit log"/><select className={input}><option>All actions</option><option>Content</option><option>Security</option></select><input className={input} type="date" aria-label="Audit date"/></Toolbar><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-console-bg text-xs uppercase tracking-wider text-slate"><tr>{['Actor','Action','Resource','IP / device','Time'].map(h=><th key={h} className="px-5 py-3 font-semibold">{h}</th>)}</tr></thead><tbody>{audit.map((r,i)=><tr key={r[3]} className="border-t border-line"><td className="px-5 py-4 font-semibold text-ink">{r[0]}</td><td className="px-5 py-4"><Pill tone={i===3?'red':'blue'}>{r[1]}</Pill></td><td className="px-5 py-4 text-ink">{r[2]}</td><td className="px-5 py-4 text-slate">Chrome · Lagos</td><td className="px-5 py-4 text-slate">{r[3]}</td></tr>)}</tbody></table></div><p className="border-t border-line p-4 text-xs text-slate">Audit records are immutable and retained for 365 days.</p></Card></Shell>}
+export function AuditScreen() {
+  const live = useConsoleData();
+  return (
+    <Shell eyebrow="Governance" title="Audit log">
+      <Card>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[650px] text-left text-sm">
+            <thead>
+              <tr>
+                {["Actor", "Action", "Resource", "Time"].map((x) => (
+                  <th className="p-4" key={x}>
+                    {x}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {live?.records.map((x) => (
+                <tr key={x.id} className="border-t border-line">
+                  <td className="p-4">{text(x, "actor_id") || "System"}</td>
+                  <td>{text(x, "event")}</td>
+                  <td>
+                    {text(x, "subject_type")} {text(x, "subject_id")}
+                  </td>
+                  <td>{text(x, "created_at")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </Shell>
+  );
+}
 
-const bars=[72,46,86,58,94,71,82,64,100,76,88,96];
-export function AnalyticsScreen(){const [range,setRange]=useState('Last 30 days');return <Shell eyebrow="Reporting" title="Analytics" action={<select className={input} value={range} onChange={e=>setRange(e.target.value)}><option>Last 7 days</option><option>Last 30 days</option><option>Last 90 days</option></select>}><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{[['Page views','1.28M','+18.4%'],['Unique readers','482K','+12.1%'],['Avg. read time','4m 18s','+8.7%'],['Newsletter joins','8,420','+24.6%']].map(x=><Card key={x[0]} className="p-5"><p className="text-sm text-slate">{x[0]}</p><p className="mt-2 font-display text-2xl font-extrabold text-navy-900">{x[1]}</p><p className="mt-2 text-xs font-semibold text-emerald-700">{x[2]} vs previous period</p></Card>)}</div><div className="grid gap-6 lg:grid-cols-[2fr_1fr]"><Card className="p-5"><div className="flex justify-between"><div><h2 className="font-display text-lg font-bold text-navy-900">Audience growth</h2><p className="text-sm text-slate">Daily readers · {range}</p></div><Pill tone="blue">Readers</Pill></div><div className="mt-8 flex h-64 items-end gap-2 border-b border-l border-line px-3">{bars.map((h,i)=><div key={i} className="group relative flex-1 rounded-t-sm bg-navy-700 hover:bg-brand-red" style={{height:`${h}%`}} title={`${h*1200} readers`}/>)}</div></Card><Card className="p-5"><h2 className="font-display text-lg font-bold text-navy-900">Top content</h2><ol className="mt-4 divide-y divide-line">{['Africa’s fintech reset','10 Builders shaping 2027','Inside Lagos climate tech','The diaspora funding map','Women building infrastructure'].map((x,i)=><li key={x} className="flex gap-3 py-3"><span className="font-display text-xl font-bold text-slate-300">{i+1}</span><div><p className="text-sm font-semibold text-ink">{x}</p><p className="text-xs text-slate">{(98-i*13)}K views</p></div></li>)}</ol></Card></div></Shell>}
+export function AnalyticsScreen() {
+  const live = useConsoleData();
+  const records = (
+    Array.isArray(live?.document.articles) ? live!.document.articles : []
+  ) as ConsoleRecord[];
+  return (
+    <Shell eyebrow="Reporting" title="Analytics">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["Page views", live?.document.views],
+          ["Shares", live?.document.shares],
+        ].map(([label, value]) => (
+          <Card key={String(label)} className="p-5">
+            <p className="text-sm text-slate">{String(label)} · last 30 days</p>
+            <p className="mt-2 font-display text-3xl font-extrabold text-navy-900">
+              {Number(value || 0).toLocaleString()}
+            </p>
+          </Card>
+        ))}
+      </div>
+      <Card>
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr>
+              <th className="p-4">Article</th>
+              <th>All-time views</th>
+            </tr>
+          </thead>
+          <tbody>
+            {records.map((x) => (
+              <tr key={x.id} className="border-t border-line">
+                <td className="p-4">{x.title}</td>
+                <td>{Number(x.view_count || 0).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </Shell>
+  );
+}
 
-const submissions=[['Ada Nwosu','A better grid for Nigeria','Story pitch','New'],['Tomi Adeyemi','Nominate Chika Okoro','Builder nomination','In review'],['Elijah Mensah','Accra Climate Week','Event','New'],['Kemi Lawal','Building open finance','Story pitch','Accepted']];
-export function SubmissionsScreen(){const [selected,setSelected]=useState(0);const [status,setStatus]=useState('In review');return <Shell eyebrow="Community inbox" title="Submissions" action={<Pill tone="red">3 new</Pill>}><Card><Toolbar><input className={`${input} flex-1`} placeholder="Search submissions…"/><select className={input}><option>All types</option><option>Story pitch</option><option>Nomination</option></select></Toolbar><div className="grid lg:grid-cols-[1fr_360px]"><div className="divide-y divide-line">{submissions.map((s,i)=><button key={s[1]} onClick={()=>setSelected(i)} className={`grid w-full grid-cols-[1fr_auto] gap-2 p-5 text-left hover:bg-console-bg ${selected===i?'bg-navy-50':''}`}><div><p className="font-semibold text-ink">{s[1]}</p><p className="mt-1 text-sm text-slate">{s[0]} · {s[2]}</p></div><Pill tone={s[3]==='New'?'red':s[3]==='Accepted'?'green':'amber'}>{s[3]}</Pill></button>)}</div><aside className="border-t border-line p-5 lg:border-l lg:border-t-0"><p className="text-xs font-bold uppercase tracking-wider text-brand-red">Submission detail</p><h2 className="mt-2 font-display text-xl font-bold text-navy-900">{submissions[selected]?.[1]}</h2><p className="mt-2 text-sm text-slate">Submitted by {submissions[selected]?.[0]} today at 09:48</p><p className="mt-5 text-sm leading-6 text-ink">A timely proposal from our community inbox. Review the supplied materials, assign an editor, and record a decision.</p><label className="mt-5 block text-sm font-semibold">Decision<select className={`${input} mt-2 w-full`} value={status} onChange={e=>setStatus(e.target.value)}><option>In review</option><option>Accepted</option><option>Declined</option></select></label><textarea className={`${input} mt-3 min-h-24 w-full py-2`} placeholder="Internal note…"/><button className={`${primary} mt-3 w-full`}>Save decision</button></aside></div></Card></Shell>}
+export function SubmissionsScreen() {
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const [selected, setSelected] = useState(live?.records[0]?.id || ""),
+    [note, setNote] = useState(""),
+    [busy, setBusy] = useState(false);
+  const item = live?.records.find((x) => x.id === selected);
+  async function move(status: string) {
+    if (!item) return;
+    setBusy(true);
+    try {
+      await http("/console/submissions/" + item.id, {
+        method: "PATCH",
+        body: { status, note: note || undefined },
+      });
+      toast("Submission updated");
+      live?.retry();
+    } catch (e) {
+      toast(errorMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Shell eyebrow="Community inbox" title="Submissions">
+      <Card>
+        <div className="grid lg:grid-cols-[360px_1fr]">
+          <div className="border-b border-line lg:border-b-0 lg:border-r">
+            {live?.records.map((x) => (
+              <button
+                className="block w-full border-b border-line p-4 text-left"
+                key={x.id}
+                onClick={() => setSelected(x.id || "")}
+              >
+                <strong className="block text-sm">{x.title}</strong>
+                <small className="text-slate">
+                  {text(x, "reference")} · {x.status}
+                </small>
+              </button>
+            ))}
+          </div>
+          <div className="p-6">
+            {item ? (
+              <>
+                <Pill>{item.status}</Pill>
+                <h2 className="mt-4 font-display text-2xl font-bold text-navy-900">
+                  {item.title}
+                </h2>
+                <p className="mt-4 whitespace-pre-line font-serif text-lg leading-8">
+                  {text(item, "pitch")}
+                </p>
+                <label className="mt-5 block text-sm font-semibold">
+                  Review note
+                  <textarea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    className={input + " mt-2 min-h-24 w-full"}
+                  />
+                </label>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button
+                    className={secondary}
+                    disabled={busy}
+                    onClick={() => move("review")}
+                  >
+                    Review
+                  </button>
+                  <button
+                    className={primary}
+                    disabled={busy}
+                    onClick={() => move("accepted")}
+                  >
+                    Accept and create draft
+                  </button>
+                  <button
+                    className={secondary}
+                    disabled={busy || !note}
+                    onClick={() => move("declined")}
+                  >
+                    Decline
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-slate">No submissions here yet.</p>
+            )}
+          </div>
+        </div>
+      </Card>
+    </Shell>
+  );
+}
 
-export function AdsScreen(){const [active,setActive]=useState(true);return <Shell eyebrow="Commercial" title="Ads & campaigns" action={<button className={primary}><Icon name="plus" className="h-4 w-4"/>New campaign</button>}><div className="grid gap-4 sm:grid-cols-3">{[['Active campaigns','4'],['Booked inventory','68%'],['Revenue this month','₦18.4M']].map(x=><Card key={x[0]} className="p-5"><p className="text-sm text-slate">{x[0]}</p><p className="mt-2 font-display text-2xl font-extrabold text-navy-900">{x[1]}</p></Card>)}</div><Card><Toolbar><h2 className="flex-1 font-display text-lg font-bold text-navy-900">Campaigns</h2><select className={input}><option>All statuses</option><option>Active</option><option>Scheduled</option></select></Toolbar><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-console-bg text-xs uppercase text-slate"><tr>{['Campaign','Sponsor','Placement','Flight','Status',''].map(h=><th key={h} className="px-5 py-3">{h}</th>)}</tr></thead><tbody>{[['Future of Work','Access Bank','Homepage hero','12 Oct – 02 Nov'],['Build Green','Sun King','Story inline','18 Oct – 18 Nov'],['Founders Fund','Paystack','Newsletter','01 Nov – 30 Nov']].map((r,i)=><tr key={r[0]} className="border-t border-line"><td className="px-5 py-4 font-semibold">{r[0]}</td><td className="px-5 py-4">{r[1]}</td><td className="px-5 py-4">{r[2]}</td><td className="px-5 py-4 text-slate">{r[3]}</td><td className="px-5 py-4"><Pill tone={i===2?'amber':'green'}>{i===2?'Scheduled':active?'Active':'Paused'}</Pill></td><td className="px-5 py-4"><button onClick={()=>setActive(!active)} className="font-semibold text-royal">{i===0?'Toggle':'Edit'}</button></td></tr>)}</tbody></table></div></Card></Shell>}
+export function AdsScreen() {
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const [editing, setEditing] = useState<ConsoleRecord | null>(null),
+    [busy, setBusy] = useState(false);
+  return (
+    <Shell
+      eyebrow="Commercial"
+      title="Ads & campaigns"
+      action={
+        <button
+          className={primary}
+          onClick={() =>
+            setEditing({
+              name: "",
+              advertiser: "",
+              placement: "home_top",
+              target_url: "",
+              starts_at: "",
+              ends_at: "",
+              status: "draft",
+            })
+          }
+        >
+          New campaign
+        </button>
+      }
+    >
+      <Card>
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr>
+              {[
+                "Campaign",
+                "Advertiser",
+                "Status",
+                "Impressions",
+                "Clicks",
+              ].map((x) => (
+                <th key={x} className="p-4">
+                  {x}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {live?.records.map((x) => (
+              <tr key={x.id} className="border-t border-line">
+                <td className="p-4">
+                  <button onClick={() => setEditing(x)}>{x.name}</button>
+                </td>
+                <td>{text(x, "advertiser")}</td>
+                <td>{x.status}</td>
+                <td>{text(x, "impressions")}</td>
+                <td>{text(x, "clicks")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+      {editing && (
+        <Card className="p-5">
+          <form
+            className="grid gap-4 sm:grid-cols-2"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setBusy(true);
+              try {
+                await http("/console/ads", { method: "PUT", body: editing });
+                toast("Campaign saved");
+                setEditing(null);
+                live?.retry();
+              } catch (e) {
+                toast(errorMessage(e));
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {["name", "advertiser", "target_url", "starts_at", "ends_at"].map(
+              (key) => (
+                <label key={key} className="text-sm font-semibold">
+                  {key.replaceAll("_", " ")}
+                  <input
+                    required
+                    type={
+                      key.endsWith("_at")
+                        ? "datetime-local"
+                        : key === "target_url"
+                          ? "url"
+                          : "text"
+                    }
+                    value={text(editing, key).slice(
+                      0,
+                      key.endsWith("_at") ? 16 : undefined,
+                    )}
+                    onChange={(e) =>
+                      setEditing({ ...editing, [key]: e.target.value })
+                    }
+                    className={input + " mt-2 w-full"}
+                  />
+                </label>
+              ),
+            )}
+            <label className="text-sm font-semibold">
+              Placement
+              <select
+                className={input + " mt-2 w-full"}
+                value={text(editing, "placement")}
+                onChange={(e) =>
+                  setEditing({ ...editing, placement: e.target.value })
+                }
+              >
+                {[
+                  "home_top",
+                  "article_inline",
+                  "category_side",
+                  "directory_top",
+                  "newsletter",
+                ].map((x) => (
+                  <option key={x}>{x}</option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm font-semibold">
+              Status
+              <select
+                className={input + " mt-2 w-full"}
+                value={text(editing, "status")}
+                onChange={(e) =>
+                  setEditing({ ...editing, status: e.target.value })
+                }
+              >
+                {["draft", "active", "paused", "ended"].map((x) => (
+                  <option key={x}>{x}</option>
+                ))}
+              </select>
+            </label>
+            <div className="flex items-end gap-3">
+              <button className={primary} disabled={busy}>
+                {busy ? <LoadingDots /> : "Save campaign"}
+              </button>
+              <button
+                type="button"
+                className={secondary}
+                onClick={() => setEditing(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </Card>
+      )}
+    </Shell>
+  );
+}
 
-const people=[['Folake Ojo','folake@thebuilder.africa','Editor-in-Chief','Active'],['Sarah Lee','sarah@thebuilder.africa','Senior editor','Active'],['David Okafor','david@thebuilder.africa','Editor','Active'],['Amina Bello','amina@thebuilder.africa','Commercial','Invited']];
-export function UsersScreen(){const router=useRouter(); const roles=router.query.view==='roles';return <Shell eyebrow="Access control" title="Users & roles" action={<button className={primary}><Icon name="user-plus" className="h-4 w-4"/>Invite user</button>}><div className="flex gap-1 rounded-lg border border-line bg-white p-1"><button onClick={()=>router.replace('/console/users')} className={`${button} flex-1 ${!roles?'bg-navy-900 text-white':'text-slate'}`}>Users</button><button onClick={()=>router.replace('/console/users?view=roles')} className={`${button} flex-1 ${roles?'bg-navy-900 text-white':'text-slate'}`}>Role matrix</button></div>{roles?<RoleMatrix/>:<Card><div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm"><thead className="bg-console-bg text-xs uppercase text-slate"><tr>{['User','Role','Status','Last active',''].map(h=><th key={h} className="px-5 py-3">{h}</th>)}</tr></thead><tbody>{people.map((p,i)=><tr key={p[1]} className="border-t border-line"><td className="px-5 py-4"><p className="font-semibold text-ink">{p[0]}</p><p className="text-xs text-slate">{p[1]}</p></td><td className="px-5 py-4">{p[2]}</td><td className="px-5 py-4"><Pill tone={p[3]==='Active'?'green':'amber'}>{p[3]}</Pill></td><td className="px-5 py-4 text-slate">{i===3?'—':`${i+1}h ago`}</td><td className="px-5 py-4"><button className="font-semibold text-royal">Manage</button></td></tr>)}</tbody></table></div></Card>}</Shell>}
-function RoleMatrix(){const perms=['Publish content','Manage homepage','Review submissions','Manage campaigns','Manage users','View audit log'];return <Card><div className="overflow-x-auto"><table className="w-full min-w-[700px] text-sm"><thead><tr className="bg-console-bg"><th className="px-5 py-4 text-left">Permission</th>{['Administrator','Editor','Contributor','Commercial'].map(x=><th key={x} className="px-4 py-4 text-center">{x}</th>)}</tr></thead><tbody>{perms.map((p,i)=><tr key={p} className="border-t border-line"><td className="px-5 py-4 font-medium">{p}</td>{[0,1,2,3].map(r=><td key={r} className="px-4 py-4 text-center"><input aria-label={`${p} for role ${r+1}`} type="checkbox" defaultChecked={r===0||(r===1&&i<4)||(r===2&&i===0)||(r===3&&i===3)} className="h-4 w-4 accent-navy-900"/></td>)}</tr>)}</tbody></table></div><div className="flex justify-end border-t border-line p-4"><button className={primary}>Save permissions</button></div></Card>}
+export function UsersScreen() {
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const [busy, setBusy] = useState("");
+  const availableRoles = [
+    "registered_user",
+    "content_editor",
+    "editor_in_chief",
+    "admin",
+  ];
+  async function update(user: ConsoleRecord, body: Record<string, unknown>) {
+    setBusy(user.id || "");
+    try {
+      await http("/console/users/" + user.id, { method: "PATCH", body });
+      toast("User updated");
+      live?.retry();
+    } catch (e) {
+      toast(errorMessage(e));
+    } finally {
+      setBusy("");
+    }
+  }
+  return (
+    <Shell eyebrow="Access control" title="Users & roles">
+      <Card>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[650px] text-left text-sm">
+            <thead>
+              <tr>
+                {["User", "Email", "Role", "Status"].map((x) => (
+                  <th className="p-4" key={x}>
+                    {x}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {live?.records.map((x) => (
+                <tr className="border-t border-line" key={x.id}>
+                  <td className="p-4">{x.name}</td>
+                  <td>{text(x, "email")}</td>
+                  <td>
+                    <select
+                      className={input}
+                      disabled={busy === x.id}
+                      value={
+                        Array.isArray(x.roles)
+                          ? String(
+                              (x.roles[0] as Record<string, unknown>)?.name ||
+                                "registered_user",
+                            )
+                          : "registered_user"
+                      }
+                      onChange={(e) => update(x, { roles: [e.target.value] })}
+                    >
+                      {availableRoles.map((role) => (
+                        <option key={role}>{role}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <select
+                      className={input}
+                      disabled={busy === x.id}
+                      value={x.status}
+                      onChange={(e) => update(x, { status: e.target.value })}
+                    >
+                      {["active", "suspended", "deactivated"].map((status) => (
+                        <option key={status}>{status}</option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </Shell>
+  );
+}
 
-export function SettingsScreen(){const [saved,setSaved]=useState(false);function submit(e:FormEvent){e.preventDefault();setSaved(true)}return <Shell eyebrow="Workspace" title="Settings"><form onSubmit={submit} className="grid gap-6 lg:grid-cols-[220px_1fr]"><nav aria-label="Settings sections"><ul className="space-y-1">{['General','Editorial','Notifications','Integrations','Security'].map((x,i)=><li key={x}><button type="button" className={`w-full rounded-md px-3 py-2 text-left text-sm font-semibold ${i===0?'bg-navy-900 text-white':'text-slate hover:bg-white'}`}>{x}</button></li>)}</ul></nav><Card className="p-5 sm:p-7"><div className="border-b border-line pb-5"><h2 className="font-display text-xl font-bold text-navy-900">General settings</h2><p className="mt-1 text-sm text-slate">Manage your publication identity and defaults.</p></div>{saved&&<div role="status" className="mt-5 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-800">Settings saved successfully.</div>}<div className="mt-6 grid gap-5 sm:grid-cols-2"><label className="text-sm font-semibold">Publication name<input className={`${input} mt-2 w-full`} defaultValue="The Builder Africa"/></label><label className="text-sm font-semibold">Default edition<select className={`${input} mt-2 w-full`}><option>Nigeria</option><option>Australia</option></select></label><label className="text-sm font-semibold sm:col-span-2">Site description<textarea className={`${input} mt-2 min-h-24 w-full py-2`} defaultValue="Stories of people building Africa's future."/></label><label className="text-sm font-semibold">Editorial timezone<select className={`${input} mt-2 w-full`}><option>Africa/Lagos (WAT)</option></select></label><label className="text-sm font-semibold">Support email<input className={`${input} mt-2 w-full`} type="email" defaultValue="hello@thebuilder.africa"/></label></div><div className="mt-6 flex justify-end"><button className={primary}>Save settings</button></div></Card></form></Shell>}
+export function SettingsScreen() {
+  const [tab, setTab] = useState("General");
+  return (
+    <Shell eyebrow="Workspace" title="Settings">
+      <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+        <nav aria-label="Settings sections">
+          <ul className="space-y-1">
+            {["General", "Navigation", "Social", "Integrations"].map((x) => (
+              <li key={x}>
+                <button
+                  className="w-full rounded-lg px-4 py-3 text-left text-sm font-semibold"
+                  onClick={() => setTab(x)}
+                >
+                  {x}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <Card className="p-6">
+          {tab !== "Integrations" ? (
+            <SiteConfigurationForm key={tab} section={tab} />
+          ) : (
+            <YouTubeControls />
+          )}
+        </Card>
+      </div>
+    </Shell>
+  );
+}
 
-export function ConsoleStatesScreen(){const router=useRouter(); const state=String(router.query.state||'denied'); const cfg=useMemo(()=>({denied:['shield-x','Permission denied','You do not have access to this area. Ask an administrator to update your role.','Back to dashboard'],session:['clock-3','Your session is expiring','For your security, you’ll be signed out in 02:00. Continue working to keep your session active.','Continue session'],unsaved:['triangle-alert','Unsaved changes','You have changes that haven’t been saved. Leaving now will discard them.','Keep editing'],rollback:['rotate-ccw','Save failed — changes rolled back','We could not save your update, so the last stable version has been restored.','Try again']} as const)[state]??['triangle-alert','Something went wrong','Return to the console and try again.','Back to dashboard'],[state]);return <Shell eyebrow="Console state" title="Recovery & safeguards"><div className="mx-auto max-w-xl py-16"><Card className="p-7 text-center sm:p-10"><span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-brand-red"><Icon name={cfg[0]} className="h-7 w-7"/></span><h2 className="mt-5 font-display text-2xl font-extrabold text-navy-900">{cfg[1]}</h2><p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate">{cfg[2]}</p><div className="mt-7 flex flex-col-reverse justify-center gap-2 sm:flex-row"><button className={secondary} onClick={()=>router.push('/console')}>Cancel</button><button className={primary} onClick={()=>router.push('/console')}>{cfg[3]}</button></div></Card><div className="mt-5 flex flex-wrap justify-center gap-2 text-xs">{['denied','session','unsaved','rollback'].map(x=><button key={x} onClick={()=>router.replace(`/console/states?state=${x}`)} className="rounded-full border border-line bg-white px-3 py-1.5 font-semibold text-slate">{x}</button>)}</div></div></Shell>}
+export function ConsoleStatesScreen() {
+  const router = useRouter();
+  const state = String(router.query.state || "denied");
+  const cfg = useMemo(
+    () =>
+      (
+        ({
+          denied: [
+            "shield-x",
+            "Permission denied",
+            "You do not have access to this area. Ask an administrator to update your role.",
+            "Back to dashboard",
+          ],
+          session: [
+            "clock-3",
+            "Your session is expiring",
+            "For your security, you’ll be signed out in 02:00. Continue working to keep your session active.",
+            "Continue session",
+          ],
+          unsaved: [
+            "triangle-alert",
+            "Unsaved changes",
+            "You have changes that haven’t been saved. Leaving now will discard them.",
+            "Keep editing",
+          ],
+          rollback: [
+            "rotate-ccw",
+            "Save failed — changes rolled back",
+            "We could not save your update, so the last stable version has been restored.",
+            "Try again",
+          ],
+        }) as const
+      )[state] ?? [
+        "triangle-alert",
+        "Something went wrong",
+        "Return to the console and try again.",
+        "Back to dashboard",
+      ],
+    [state],
+  );
+  return (
+    <Shell eyebrow="Console state" title="Recovery & safeguards">
+      <div className="mx-auto max-w-xl py-16">
+        <Card className="p-7 text-center sm:p-10">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-brand-red">
+            <Icon name={cfg[0]} className="h-7 w-7" />
+          </span>
+          <h2 className="mt-5 font-display text-2xl font-extrabold text-navy-900">
+            {cfg[1]}
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate">
+            {cfg[2]}
+          </p>
+          <div className="mt-7 flex flex-col-reverse justify-center gap-2 sm:flex-row">
+            <button
+              className={secondary}
+              onClick={() => router.push("/console")}
+            >
+              Cancel
+            </button>
+            <button className={primary} onClick={() => router.push("/console")}>
+              {cfg[3]}
+            </button>
+          </div>
+        </Card>
+        <div className="mt-5 flex flex-wrap justify-center gap-2 text-xs">
+          {["denied", "session", "unsaved", "rollback"].map((x) => (
+            <button
+              key={x}
+              onClick={() => router.replace(`/console/states?state=${x}`)}
+              className="rounded-full border border-line bg-white px-3 py-1.5 font-semibold text-slate"
+            >
+              {x}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Shell>
+  );
+}
+
+export function OpportunitiesEditorScreen() {
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const [item, setItem] = useState<ConsoleRecord | null>(null),
+    [busy, setBusy] = useState(false);
+  const blank = {
+    title: "",
+    organisation: "",
+    type: "grant",
+    location: "",
+    region: "",
+    description: "",
+    eligibility: "",
+    apply_url: "",
+    deadline: "",
+    edition: "both",
+    status: "draft",
+    remote: false,
+  };
+  async function save(e: FormEvent) {
+    e.preventDefault();
+    if (!item) return;
+    setBusy(true);
+    try {
+      await http("/console/opportunities" + (item.id ? "/" + item.id : ""), {
+        method: item.id ? "PUT" : "POST",
+        body: {
+          title: item.title,
+          slug: item.slug || undefined,
+          organisation: item.organisation,
+          type: item.type,
+          location: item.location,
+          region: item.region || null,
+          description: item.description,
+          eligibility: item.eligibility || null,
+          applyUrl: item.apply_url,
+          deadline: item.deadline || null,
+          edition: item.edition,
+          status: item.status,
+          remote: item.remote,
+        },
+      });
+      toast("Opportunity saved");
+      setItem(null);
+      live?.retry();
+    } catch (e) {
+      toast(errorMessage(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Shell
+      eyebrow="Discovery"
+      title="Opportunities"
+      action={
+        <button className={primary} onClick={() => setItem(blank)}>
+          New opportunity
+        </button>
+      }
+    >
+      <Card>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr>
+                {["Title", "Organisation", "Deadline", "Status"].map((x) => (
+                  <th key={x} className="p-4">
+                    {x}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {live?.records.map((x) => (
+                <tr className="border-t border-line" key={x.id}>
+                  <td className="p-4">
+                    <button onClick={() => setItem(x)}>{x.title}</button>
+                  </td>
+                  <td>{text(x, "organisation")}</td>
+                  <td>{text(x, "deadline").slice(0, 10) || "Rolling"}</td>
+                  <td>{x.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+      {item && (
+        <Card className="p-6">
+          <form onSubmit={save} className="grid gap-4 md:grid-cols-2">
+            {[
+              ["Title", "title"],
+              ["Organisation", "organisation"],
+              ["Location", "location"],
+              ["Region", "region"],
+              ["Application URL", "apply_url"],
+              ["Deadline", "deadline"],
+            ].map(([label, key]) => (
+              <label key={key} className="text-sm font-semibold">
+                {label}
+                <input
+                  required={[
+                    "title",
+                    "organisation",
+                    "location",
+                    "apply_url",
+                  ].includes(key!)}
+                  type={
+                    key === "deadline"
+                      ? "date"
+                      : key === "apply_url"
+                        ? "url"
+                        : "text"
+                  }
+                  className={input + " mt-2 w-full"}
+                  value={text(item, key!).slice(
+                    0,
+                    key === "deadline" ? 10 : undefined,
+                  )}
+                  onChange={(e) => setItem({ ...item, [key!]: e.target.value })}
+                />
+              </label>
+            ))}
+            {[
+              ["Type", "type", ["job", "grant", "fellowship", "accelerator"]],
+              ["Edition", "edition", ["both", "Nigeria", "Australia"]],
+              ["Status", "status", ["draft", "published", "archived"]],
+            ].map(([label, key, choices]) => (
+              <label key={String(key)} className="text-sm font-semibold">
+                {String(label)}
+                <select
+                  className={input + " mt-2 w-full"}
+                  value={text(item, String(key))}
+                  onChange={(e) =>
+                    setItem({ ...item, [String(key)]: e.target.value })
+                  }
+                >
+                  {(choices as string[]).map((x) => (
+                    <option key={x}>{x}</option>
+                  ))}
+                </select>
+              </label>
+            ))}
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={Boolean(item.remote)}
+                onChange={(e) => setItem({ ...item, remote: e.target.checked })}
+              />
+              Remote
+            </label>
+            {[
+              ["Description", "description"],
+              ["Eligibility", "eligibility"],
+            ].map(([label, key]) => (
+              <label key={key} className="text-sm font-semibold md:col-span-2">
+                {label}
+                <textarea
+                  required={key === "description"}
+                  className={input + " mt-2 min-h-32 w-full py-3"}
+                  value={text(item, key!)}
+                  onChange={(e) => setItem({ ...item, [key!]: e.target.value })}
+                />
+              </label>
+            ))}
+            <div className="flex gap-3">
+              <button className={primary} disabled={busy}>
+                {busy ? <LoadingDots /> : "Save opportunity"}
+              </button>
+              <button
+                className={secondary}
+                type="button"
+                onClick={() => setItem(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </Card>
+      )}
+    </Shell>
+  );
+}
+
+export function VideoManagementScreen() {
+  const live = useConsoleData();
+  const { toast } = useToast();
+  const [item, setItem] = useState<ConsoleRecord | null>(null),
+    [busy, setBusy] = useState(false);
+  return (
+    <Shell
+      title="Videos"
+      eyebrow="YouTube editorial review"
+      action={
+        <a href="#youtube-channels" className={secondary}>
+          Channel controls
+        </a>
+      }
+    >
+      <Card>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr>
+                {["Video", "Availability", "Status"].map((label) => (
+                  <th key={label} className="p-4">
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {live?.records.map((video) => (
+                <tr key={video.id} className="border-t border-line">
+                  <td className="p-4">
+                    <button onClick={() => setItem(video)}>
+                      {text(video, "title") || text(video, "provider_title")}
+                    </button>
+                  </td>
+                  <td>
+                    {video.available && video.embeddable
+                      ? "Public and embeddable"
+                      : "Unavailable"}
+                  </td>
+                  <td>{video.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {live?.records.length === 0 && (
+            <p className="p-6 text-sm text-slate">
+              No videos imported yet. Configure the official channel to begin.
+            </p>
+          )}
+        </div>
+      </Card>
+      <YouTubeControls />
+      {item && (
+        <Card className="p-6">
+          <form
+            className="space-y-5"
+            onSubmit={async (event) => {
+              event.preventDefault();
+              setBusy(true);
+              try {
+                await http("/console/videos/" + item.id, {
+                  method: "PATCH",
+                  body: {
+                    title: item.title || null,
+                    description: item.description || null,
+                    format: item.format || null,
+                    status: item.status,
+                    featured: Boolean(item.featured),
+                  },
+                });
+                toast("Video saved");
+                setItem(null);
+                live?.retry();
+              } catch (error) {
+                toast(errorMessage(error), "error");
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            <label className="block text-sm font-semibold">
+              Video format
+              <select
+                className={input + " mt-2 w-full"}
+                value={text(item, "format")}
+                onChange={(event) =>
+                  setItem({ ...item, format: event.target.value })
+                }
+              >
+                <option value="">Unclassified</option>
+                {videoFormats.map(({ label, value }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-sm font-semibold">
+              Editorial title
+              <input
+                className={input + " mt-2 w-full"}
+                value={text(item, "title")}
+                onChange={(event) =>
+                  setItem({ ...item, title: event.target.value })
+                }
+                placeholder={text(item, "provider_title")}
+              />
+            </label>
+            <label className="block text-sm font-semibold">
+              Editorial description
+              <textarea
+                className={input + " mt-2 min-h-32 w-full py-3"}
+                value={text(item, "description")}
+                onChange={(event) =>
+                  setItem({ ...item, description: event.target.value })
+                }
+              />
+            </label>
+            <label className="block text-sm font-semibold">
+              Status
+              <select
+                className={input + " mt-2 w-full"}
+                value={item.status}
+                onChange={(event) =>
+                  setItem({ ...item, status: event.target.value })
+                }
+              >
+                {["imported", "published", "archived"].map((status) => (
+                  <option key={status}>{status}</option>
+                ))}
+              </select>
+            </label>
+            <label className="flex gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={Boolean(item.featured)}
+                onChange={(event) =>
+                  setItem({ ...item, featured: event.target.checked })
+                }
+              />
+              Feature this video
+            </label>
+            <p className="text-sm text-slate">
+              Provider metadata is retained separately. Private, deleted and
+              non-embeddable videos cannot appear publicly.
+            </p>
+            <div className="flex gap-3">
+              <button className={primary} disabled={busy}>
+                {busy ? <LoadingDots /> : "Save video"}
+              </button>
+              <button
+                className={secondary}
+                type="button"
+                onClick={() => setItem(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </Card>
+      )}
+    </Shell>
+  );
+}

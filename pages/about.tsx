@@ -1,1 +1,1 @@
-export { AboutScreen as default } from '@/features/explore/ExploreScreens';
+export { AboutScreen as default } from "@/features/explore/ExploreScreens";

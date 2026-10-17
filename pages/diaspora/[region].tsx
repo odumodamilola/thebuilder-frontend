@@ -1,1 +1,4 @@
-export { DiasporaRegionScreen as default } from '@/features/explore/ExploreScreens';
+export { DiasporaRegionScreen as default } from "@/features/explore/ExploreScreens";
+
+import { publicPageProps } from "@/lib/public-ssr";
+export const getServerSideProps = publicPageProps("/diaspora/[region]");

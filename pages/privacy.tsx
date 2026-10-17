@@ -1,3 +1,5 @@
-import Head from 'next/head'
-
-export default function PrivacyPage(){return <><Head><title>Privacy · The Builder</title></Head><main className="mx-auto max-w-3xl px-4 py-14 md:px-6 md:py-20"><p className="text-xs font-bold uppercase tracking-[.14em] text-[var(--text-accent)]">Your information</p><h1 className="mt-3 font-display text-4xl font-extrabold text-[var(--text-heading)] md:text-6xl">Privacy</h1><div className="mt-8 space-y-7 font-serif text-lg leading-8 text-[var(--text-body)]"><p>We collect only the information needed to operate accounts, newsletters, nominations and story submissions. The production Laravel API will be the system of record for consent, retention and deletion.</p><section><h2 className="font-display text-2xl font-bold text-[var(--text-heading)]">Your choices</h2><p className="mt-2">You can update newsletter preferences from account settings and request account deletion at any time.</p></section><section><h2 className="font-display text-2xl font-bold text-[var(--text-heading)]">Contact</h2><p className="mt-2">Questions can be sent to privacy@thebuilder.africa.</p></section></div></main></>}
+import { PolicyPage } from "@/components/ui/PolicyPage";
+export { policyPageProps as getServerSideProps } from "@/lib/policy-page-props";
+export default function PrivacyPage() {
+  return <PolicyPage kind="privacy" />;
+}

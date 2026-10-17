@@ -1,2 +1,4 @@
-import { AuthScreen } from '@/features/account/AuthScreen'
-export default function Page(){return <AuthScreen initialView="mfa-setup"/>}
+import { AuthScreen } from "@/features/account/AuthScreen";
+export default function Page() {
+  return <AuthScreen initialView="mfa-setup" />;
+}

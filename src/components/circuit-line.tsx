@@ -1,8 +1,16 @@
-import React from 'react';
+import React from "react";
 
-export function CircuitLine({ height = 24, nodes = false, animate = false, className = '' }) {
+export function CircuitLine({
+  height = 24,
+  nodes = false,
+  animate = false,
+  className = "",
+}) {
   return (
-    <div className={`w-full flex items-center opacity-20 ${className}`} style={{ height }}>
+    <div
+      className={`w-full flex items-center opacity-20 ${className}`}
+      style={{ height }}
+    >
       <div className="w-full h-px bg-[var(--border-strong)] relative">
         {nodes && (
           <>

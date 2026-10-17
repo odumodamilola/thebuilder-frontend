@@ -3,6 +3,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Loading tokens copied from the supplied HTML design system. */
+@keyframes tb-shimmer { 0%,100% { opacity: 1 } 50% { opacity: .55 } }
+@keyframes tb-pulse { 0%,80%,100% { opacity: .25; transform: scale(.8) } 40% { opacity: 1; transform: scale(1) } }
+.tb-skeleton { animation: tb-shimmer 1.6s ease-in-out infinite; }
+.tb-loading-dot { width: 6px; height: 6px; border-radius: 3px; background: currentColor; animation: tb-pulse 1s cubic-bezier(.22,1,.36,1) infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .tb-skeleton, .tb-loading-dot { animation: none; }
+}
+
 :root {
   color-scheme: light;
   --navy-900: #0b2046;

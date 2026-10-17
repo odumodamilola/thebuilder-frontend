@@ -1,0 +1,13 @@
+{
+  "categories": {
+    "Australia": ["Business", "Startups", "Community", "Entrepreneurs", "Academia", "Research", "Policy", "Interviews"],
+    "Nigeria": ["Business", "Startups", "Community", "Entrepreneurs", "Academia", "Diaspora", "Interviews"]
+  },
+  "footerCredits": {"Australia": "TechPro Consulting Pty Ltd", "Nigeria": "TechPro Nigeria"},
+  "regions": ["Australia", "Africa", "UK", "US", "Canada"],
+  "videoFormats": [
+    {"label": "Interviews", "value": "interview"},
+    {"label": "Podcast", "value": "podcast"},
+    {"label": "Documentary", "value": "documentary"}
+  ]
+}

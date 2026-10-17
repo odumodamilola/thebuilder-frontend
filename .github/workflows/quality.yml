@@ -1,0 +1,44 @@
+name: Frontend quality
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['22', '24']
+    env:
+      BUILDER_BUILD_TARGET: preview
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:8012/api/v1
+      BUILDER_SSR_SECRET: disposable-ci-public-read-signing-secret-only
+      NEXT_PUBLIC_DESIGN_PREVIEW: 'false'
+      BUILDER_CONTRACT_PATH: contracts/openapi.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run type-check
+      - run: npm run check:theme
+      - run: npm run check:settings
+      - run: npm run check:auth
+      - run: npm run check:editorial
+      - run: npm run check:contract
+      - run: npm run check:release
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run build
+      - name: Save full tooling audit for review
+        if: always()
+        run: npm audit --json > tooling-audit.json || true
+      - name: Enforce bounded tooling risk policy
+        run: node scripts/check-tooling-risk.cjs tooling-audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-tooling-audit-node-${{ matrix.node }}
+          path: tooling-audit.json

@@ -1,1 +1,1 @@
-export { NewsletterScreen as default } from '@/features/explore/ExploreScreens';
+export { NewsletterScreen as default } from "@/features/explore/ExploreScreens";

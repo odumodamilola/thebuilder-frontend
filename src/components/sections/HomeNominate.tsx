@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 export default function HomeNominate() {
   return (
@@ -13,11 +13,17 @@ export default function HomeNominate() {
             KNOW A BUILDER WE SHOULD FEATURE.
           </h2>
           <p className="mb-8 max-w-2xl font-serif text-xl text-[color:color-mix(in_srgb,var(--text-on-inverse)_80%,transparent)]">
-            Founders, professionals and community leaders doing remarkable work, at home or abroad. Tell us who. Our editors read every nomination.
+            Founders, professionals and community leaders doing remarkable work,
+            at home or abroad. Tell us who. Our editors read every nomination.
           </p>
-          <Link href="/nominate" className="inline-flex min-h-12 items-center rounded-control bg-[var(--accent)] px-6 font-semibold text-[var(--text-on-inverse)] hover:bg-[var(--accent-hover)]">Nominate a Builder →</Link>
+          <Link
+            href="/nominate"
+            className="inline-flex min-h-12 items-center rounded-control bg-[var(--accent)] px-6 font-semibold text-[var(--text-on-inverse)] hover:bg-[var(--accent-hover)]"
+          >
+            Nominate a Builder →
+          </Link>
         </div>
       </div>
     </section>
-  )
+  );
 }

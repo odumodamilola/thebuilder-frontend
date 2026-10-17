@@ -1,16 +1,33 @@
-import SectionTitle from '../ui/SectionTitle'
-import Link from 'next/link'
+import { usePublicData } from "@/context/PublicDataContext";
+import SectionTitle from "../ui/SectionTitle";
+import Link from "next/link";
 
 export default function HomeVideos() {
-  const videos = [
-    { title: 'Haftu Strintzos: the long road to Melbourne', duration: '12:40', date: '6 Oct' },
-    { title: 'Inside Shamba Cold’s first cold room', duration: '6:05', date: '3 Oct' },
-    { title: 'Mohamed Semra on civic leadership', duration: '18:22', date: '30 Sep' },
-    { title: 'Explainer: how remittance fees work', duration: '4:51', date: '27 Sep' }
-  ]
+  const videos = usePublicData()?.home?.videos || [
+    {
+      title: "Haftu Strintzos: the long road to Melbourne",
+      duration: "12:40",
+      date: "6 Oct",
+    },
+    {
+      title: "Inside Shamba Cold’s first cold room",
+      duration: "6:05",
+      date: "3 Oct",
+    },
+    {
+      title: "Mohamed Semra on civic leadership",
+      duration: "18:22",
+      date: "30 Sep",
+    },
+    {
+      title: "Explainer: how remittance fees work",
+      duration: "4:51",
+      date: "27 Sep",
+    },
+  ];
 
-  const mainVideo = videos[0]
-  const sideVideos = videos.slice(1)
+  const mainVideo = videos[0];
+  const sideVideos = videos.slice(1);
 
   if (!mainVideo) return null;
 
@@ -19,15 +36,21 @@ export default function HomeVideos() {
       <div className="max-w-container mx-auto px-4 md:px-6">
         <div className="flex justify-between items-end mb-8">
           <SectionTitle inverse>Videos</SectionTitle>
-          <a href="/videos" className="hidden md:block font-semibold text-[var(--text-meta-on-inverse)] hover:text-[var(--text-on-inverse)] transition-colors text-sm">
+          <a
+            href="/videos"
+            className="hidden md:block font-semibold text-[var(--text-meta-on-inverse)] hover:text-[var(--text-on-inverse)] transition-colors text-sm"
+          >
             All videos →
           </a>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[32px]">
-          
           {/* Main Video */}
-          <Link href="/videos" aria-label={`Watch ${mainVideo.title}`} className="group text-left flex flex-col gap-[12px] min-w-0 rounded-[12px]">
+          <Link
+            href={"id" in mainVideo ? `/videos/${mainVideo.id}` : "/videos"}
+            aria-label={`Watch ${mainVideo.title}`}
+            className="group text-left flex flex-col gap-[12px] min-w-0 rounded-[12px]"
+          >
             <div className="w-full aspect-video bg-[var(--surface-inverse)] rounded-[12px] overflow-hidden relative">
               <div className="absolute top-0 right-0 w-[80%] h-[150%] bg-[var(--decoration-royal)] rounded-bl-full opacity-50 translate-x-[10%] -translate-y-[20%]" />
               <div className="absolute inset-0 tb-dots opacity-20" />
@@ -44,13 +67,20 @@ export default function HomeVideos() {
             <span className="font-display font-bold text-[clamp(20px,2vw,26px)] leading-[1.2] text-[var(--text-on-inverse)] tracking-[-0.01em]">
               {mainVideo.title}
             </span>
-            <span className="text-[13px] text-[var(--text-meta-on-inverse)] mt-[-4px]">{mainVideo.date}</span>
+            <span className="text-[13px] text-[var(--text-meta-on-inverse)] mt-[-4px]">
+              {mainVideo.date}
+            </span>
           </Link>
 
           {/* Side Videos */}
           <div className="flex flex-col gap-4">
             {sideVideos.map((vid, i) => (
-              <Link key={i} href="/videos" aria-label={`Watch ${vid.title}`} className="group text-left grid grid-cols-[136px_1fr] md:grid-cols-1 lg:grid-cols-[168px_1fr] gap-[16px] items-start min-w-0 rounded-[10px]">
+              <Link
+                key={i}
+                href="/videos"
+                aria-label={`Watch ${vid.title}`}
+                className="group text-left grid grid-cols-[136px_1fr] md:grid-cols-1 lg:grid-cols-[168px_1fr] gap-[16px] items-start min-w-0 rounded-[10px]"
+              >
                 <div className="w-full aspect-video bg-[var(--surface-inverse)] rounded-[10px] overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-[80%] h-[150%] bg-[var(--decoration-royal)] rounded-bl-full opacity-50 translate-x-[10%] -translate-y-[20%]" />
                   <div className="absolute inset-0 tb-dots opacity-20" />
@@ -68,14 +98,15 @@ export default function HomeVideos() {
                   <span className="font-display font-bold text-[16px] leading-[22px] text-[var(--text-on-inverse)] break-words">
                     {vid.title}
                   </span>
-                  <span className="text-[13px] text-[var(--text-meta-on-inverse)]">{vid.date}</span>
+                  <span className="text-[13px] text-[var(--text-meta-on-inverse)]">
+                    {vid.date}
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
-
         </div>
       </div>
     </section>
-  )
+  );
 }

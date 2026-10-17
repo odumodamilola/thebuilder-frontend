@@ -1,1 +1,2 @@
-import { NominationsPage } from '@/features/console/ConsolePages'; export default NominationsPage
+import { NominationsPage } from "@/features/console/ConsolePages";
+export default NominationsPage;

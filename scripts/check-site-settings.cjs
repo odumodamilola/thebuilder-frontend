@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const ts=require('typescript');
+const exportsObject=require('./ts-module.cjs').createLoader()(path.join(__dirname,'../src/lib/site-settings.ts'));
+const {safeNavigationUrl,normalizeSiteSettings}=exportsObject;
+for(const url of ['/','/stories?category=fintech','https://example.org/resources'])assert(safeNavigationUrl(url),url);
+for(const url of ['//evil.example','/\\evil.example','javascript:alert(1)','data:text/html,unsafe','relative/path','https:example.org','https://name:password@example.org','/path\nheader',null,42])assert(!safeNavigationUrl(url),String(url));
+const settings=normalizeSiteSettings({siteName:'The Builder',footer:'<script>plain text</script>',menus:[{label:'Stories',url:'/stories'},{label:'Unsafe',url:'//evil.example'}],socialLinks:{youtube:'https://www.youtube.com/@example',x:'javascript:alert(1)',unknown:'https://example.org'}});
+assert.equal(settings.menus.length,1);assert.equal(settings.socialLinks.youtube,'https://www.youtube.com/@example');assert.equal(Object.keys(settings.socialLinks).length,1);assert.equal(settings.footer,'<script>plain text</script>');
+assert.equal(normalizeSiteSettings({menus:null}).menus,undefined);assert.equal(normalizeSiteSettings({footer:null}).footer,'');assert.equal(normalizeSiteSettings({}).siteName,'The Builder');
+console.log('Site settings: safe links, known social platforms, invalid-record filtering, navigation fallback and nullable clearing pass.');

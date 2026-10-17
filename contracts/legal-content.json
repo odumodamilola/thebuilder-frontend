@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "publishers": {
+    "Nigeria": { "name": "TechPro Nigeria", "contactEmail": "", "office": "", "approved": false },
+    "Australia": { "name": "TechPro Consulting Pty Ltd", "contactEmail": "editor-in-chief@thebuilderau.com", "office": "Suite 304A, Level 3, 167–169 Queen Street, Melbourne VIC 3000", "approved": false }
+  },
+  "policies": {
+    "Nigeria": {
+      "terms": { "title": "Terms and Conditions", "status": "pending", "version": "", "approvedBy": "", "approvedAt": "", "sections": [] },
+      "privacy": { "title": "Privacy Policy", "status": "pending", "version": "", "approvedBy": "", "approvedAt": "", "sections": [] },
+      "sponsored": { "title": "Sponsored Content Policy", "status": "pending", "version": "", "approvedBy": "", "approvedAt": "", "sections": [] }
+    },
+    "Australia": {
+      "terms": { "title": "Terms and Conditions", "status": "pending", "version": "", "approvedBy": "", "approvedAt": "", "sections": [] },
+      "privacy": { "title": "Privacy Policy", "status": "pending", "version": "", "approvedBy": "", "approvedAt": "", "sections": [] },
+      "sponsored": { "title": "Sponsored Content Policy", "status": "pending", "version": "", "approvedBy": "", "approvedAt": "", "sections": [] }
+    }
+  }
+}

@@ -1,10 +1,10 @@
-import { InputHTMLAttributes, forwardRef } from 'react'
-import { cn } from '@/lib/utils'
+import { InputHTMLAttributes, forwardRef } from "react";
+import { cn } from "@/lib/utils";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  error?: string
-  rightElement?: React.ReactNode
+  label?: string;
+  error?: string;
+  rightElement?: React.ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -24,8 +24,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               "focus:outline-none focus:border-[var(--border-emphasis)] focus:ring-1 focus:ring-[var(--focus-ring)]",
               "placeholder:text-[var(--text-meta)] disabled:bg-[var(--surface-hover)] disabled:text-[var(--text-meta)]",
               rightElement && "pr-10",
-              error && "border-[var(--accent)] focus:border-[var(--accent)] focus:ring-[var(--focus-ring)]",
-              className
+              error &&
+                "border-[var(--accent)] focus:border-[var(--accent)] focus:ring-[var(--focus-ring)]",
+              className,
             )}
             {...props}
           />
@@ -35,9 +36,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <span className="text-sm font-ui text-[var(--text-accent)]">{error}</span>}
+        {error && (
+          <span className="text-sm font-ui text-[var(--text-accent)]">
+            {error}
+          </span>
+        )}
       </div>
-    )
-  }
-)
-Input.displayName = 'Input'
+    );
+  },
+);
+Input.displayName = "Input";
